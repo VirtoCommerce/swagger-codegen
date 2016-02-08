@@ -11,9 +11,8 @@ import io.swagger.codegen.CodegenProperty;
 import io.swagger.codegen.CodegenType;
 import io.swagger.codegen.DefaultCodegen;
 import io.swagger.codegen.SupportingFile;
-import io.swagger.models.Model;
+import io.swagger.models.*;
 import io.swagger.models.properties.ArrayProperty;
-import io.swagger.models.properties.LongProperty;
 import io.swagger.models.properties.MapProperty;
 import io.swagger.models.properties.Property;
 import io.swagger.models.properties.RefProperty;
@@ -32,17 +31,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public class JavascriptClientCodegen extends DefaultCodegen implements CodegenConfig {
+    @SuppressWarnings("hiding")
     private static final Logger LOGGER = LoggerFactory.getLogger(JavascriptClientCodegen.class);
 
-    protected String invokerPackage = "io.swagger.client";
-    protected String groupId = "io.swagger";
-    protected String artifactId = "swagger-java-client";
-    protected String artifactVersion = "1.0.0";
+    private static final String PROJECT_NAME = "projectName";
+    private static final String MODULE_NAME = "moduleName";
+    private static final String PROJECT_DESCRIPTION = "projectDescription";
+    private static final String PROJECT_VERSION = "projectVersion";
+    private static final String PROJECT_LICENSE_NAME = "projectLicenseName";
+
+    protected String projectName;
+    protected String moduleName;
+    protected String projectDescription;
+    protected String projectVersion;
+
     protected String sourceFolder = "src";
     protected String localVariablePrefix = "";
-    protected boolean fullJavaUtil = false;
-    protected String javaUtilPrefix = "";
-    protected Boolean serializableModel = false;
 
     public JavascriptClientCodegen() {
         super();
@@ -50,44 +54,48 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
         modelTemplateFiles.put("model.mustache", ".js");
         apiTemplateFiles.put("api.mustache", ".js");
         templateDir = "Javascript";
-        apiPackage = "scripts/rest/api";
-        modelPackage = "scripts/rest/model";
+        apiPackage = "api";
+        modelPackage = "model";
 
+        // reference: http://www.w3schools.com/js/js_reserved.asp
         reservedWords = new HashSet<String>(
                 Arrays.asList(
-                        "abstract", "continue", "for", "new", "switch", "assert",
-                        "default", "if", "package", "synchronized", "boolean", "do", "goto", "private",
-                        "this", "break", "double", "implements", "protected", "throw", "byte", "else",
-                        "import", "public", "throws", "case", "enum", "instanceof", "return", "transient",
-                        "catch", "extends", "int", "short", "try", "char", "final", "interface", "static",
-                        "void", "class", "finally", "long", "strictfp", "volatile", "const", "float",
-                        "native", "super", "while")
+                        "abstract", "arguments", "boolean", "break", "byte",
+                        "case", "catch", "char", "class", "const",
+                        "continue", "debugger", "default", "delete", "do",
+                        "double", "else", "enum", "eval", "export",
+                        "extends", "false", "final", "finally", "float",
+                        "for", "function", "goto", "if", "implements",
+                        "import", "in", "instanceof", "int", "interface",
+                        "let", "long", "native", "new", "null",
+                        "package", "private", "protected", "public", "return",
+                        "short", "static", "super", "switch", "synchronized",
+                        "this", "throw", "throws", "transient", "true",
+                        "try", "typeof", "var", "void", "volatile",
+                        "while", "with", "yield",
+                        "Array", "Date", "eval", "function", "hasOwnProperty",
+                        "Infinity", "isFinite", "isNaN", "isPrototypeOf",
+                        "Math", "NaN", "Number", "Object",
+                        "prototype", "String", "toString", "undefined", "valueOf")
         );
 
         languageSpecificPrimitives = new HashSet<String>(
-                Arrays.asList(
-                        "String",
-                        "boolean",
-                        "Boolean",
-                        "Double",
-                        "Integer",
-                        "Long",
-                        "Float",
-                        "Object",
-                        "byte[]")
+                Arrays.asList("String", "Boolean", "Integer", "Number", "Array", "Object", "Date", "File")
         );
-        instantiationTypes.put("array", "Array");
-        instantiationTypes.put("map", "HashMap");
+        defaultIncludes = new HashSet<String>(languageSpecificPrimitives);
 
-        cliOptions.add(new CliOption(CodegenConstants.INVOKER_PACKAGE, CodegenConstants.INVOKER_PACKAGE_DESC));
-        cliOptions.add(new CliOption(CodegenConstants.GROUP_ID, CodegenConstants.GROUP_ID_DESC));
-        cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_ID, CodegenConstants.ARTIFACT_ID_DESC));
-        cliOptions.add(new CliOption(CodegenConstants.ARTIFACT_VERSION, CodegenConstants.ARTIFACT_VERSION_DESC));
-        cliOptions.add(new CliOption(CodegenConstants.SOURCE_FOLDER, CodegenConstants.SOURCE_FOLDER_DESC));
+        cliOptions.add(new CliOption(CodegenConstants.SOURCE_FOLDER, CodegenConstants.SOURCE_FOLDER_DESC).defaultValue("src"));
         cliOptions.add(new CliOption(CodegenConstants.LOCAL_VARIABLE_PREFIX, CodegenConstants.LOCAL_VARIABLE_PREFIX_DESC));
-        cliOptions.add(new CliOption(CodegenConstants.SERIALIZABLE_MODEL, CodegenConstants.SERIALIZABLE_MODEL_DESC));
-        cliOptions.add(new CliOption("fullJavaUtil", "whether to use fully qualified name for classes under java.util (default to false)"));
-
+        cliOptions.add(new CliOption(PROJECT_NAME,
+                "name of the project (Default: generated from info.title or \"swagger-js-client\")"));
+        cliOptions.add(new CliOption(MODULE_NAME,
+                "module name for AMD, Node or globals (Default: generated from <projectName>)"));
+        cliOptions.add(new CliOption(PROJECT_DESCRIPTION,
+                "description of the project (Default: using info.description or \"Client library of <projectName>\")"));
+        cliOptions.add(new CliOption(PROJECT_VERSION,
+                "version of the project (Default: using info.version or \"1.0.0\")"));
+        cliOptions.add(new CliOption(PROJECT_LICENSE_NAME,
+                "name of the license the project uses (Default: using info.license.name)"));
     }
 
     @Override
@@ -109,8 +117,97 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
     public void processOpts() {
         super.processOpts();
 
-            typeMapping.put("array", "Array");
-            
+        typeMapping = new HashMap<String, String>();
+        typeMapping.put("array", "Array");
+        typeMapping.put("List", "Array");
+        typeMapping.put("map", "Object");
+        typeMapping.put("object", "Object");
+        typeMapping.put("boolean", "Boolean");
+        typeMapping.put("char", "String");
+        typeMapping.put("string", "String");
+        typeMapping.put("short", "Integer");
+        typeMapping.put("int", "Integer");
+        typeMapping.put("integer", "Integer");
+        typeMapping.put("long", "Integer");
+        typeMapping.put("float", "Number");
+        typeMapping.put("double", "Number");
+        typeMapping.put("number", "Number");
+        typeMapping.put("DateTime", "Date");
+        // binary not supported in JavaScript client right now, using String as a workaround
+        typeMapping.put("binary", "String");
+
+        importMapping.clear();
+    }
+
+    @Override
+    public void preprocessSwagger(Swagger swagger) {
+        super.preprocessSwagger(swagger);
+
+        if (additionalProperties.containsKey(PROJECT_NAME)) {
+            projectName = ((String) additionalProperties.get(PROJECT_NAME));
+        }
+        if (additionalProperties.containsKey(MODULE_NAME)) {
+            moduleName = ((String) additionalProperties.get(MODULE_NAME));
+        }
+        if (additionalProperties.containsKey(PROJECT_DESCRIPTION)) {
+            projectDescription = ((String) additionalProperties.get(PROJECT_DESCRIPTION));
+        }
+        if (additionalProperties.containsKey(PROJECT_VERSION)) {
+            projectVersion = ((String) additionalProperties.get(PROJECT_VERSION));
+        }
+        if (additionalProperties.containsKey(CodegenConstants.LOCAL_VARIABLE_PREFIX)) {
+            localVariablePrefix = (String) additionalProperties.get(CodegenConstants.LOCAL_VARIABLE_PREFIX);
+        }
+        if (additionalProperties.containsKey(CodegenConstants.SOURCE_FOLDER)) {
+            sourceFolder = (String) additionalProperties.get(CodegenConstants.SOURCE_FOLDER);
+        }
+
+        if (swagger.getInfo() != null) {
+            Info info = swagger.getInfo();
+            if (StringUtils.isBlank(projectName) && info.getTitle() != null) {
+                // when projectName is not specified, generate it from info.title
+                projectName = dashize(info.getTitle());
+            }
+            if (StringUtils.isBlank(projectVersion)) {
+                // when projectVersion is not specified, use info.version
+                projectVersion = info.getVersion();
+            }
+            if (projectDescription == null) {
+                // when projectDescription is not specified, use info.description
+                projectDescription = info.getDescription();
+            }
+            if (info.getLicense() != null) {
+                License license = info.getLicense();
+                if (additionalProperties.get(PROJECT_LICENSE_NAME) == null) {
+                    additionalProperties.put(PROJECT_LICENSE_NAME, license.getName());
+                }
+            }
+        }
+
+        // default values
+        if (StringUtils.isBlank(projectName)) {
+            projectName = "swagger-js-client";
+        }
+        if (StringUtils.isBlank(moduleName)) {
+            moduleName = camelize(underscore(projectName));
+        }
+        if (StringUtils.isBlank(projectVersion)) {
+            projectVersion = "1.0.0";
+        }
+        if (projectDescription == null) {
+            projectDescription = "Client library of " + projectName;
+        }
+
+        additionalProperties.put(PROJECT_NAME, projectName);
+        additionalProperties.put(MODULE_NAME, moduleName);
+        additionalProperties.put(PROJECT_DESCRIPTION, escapeText(projectDescription));
+        additionalProperties.put(PROJECT_VERSION, projectVersion);
+        additionalProperties.put(CodegenConstants.LOCAL_VARIABLE_PREFIX, localVariablePrefix);
+        additionalProperties.put(CodegenConstants.SOURCE_FOLDER, sourceFolder);
+
+        supportingFiles.add(new SupportingFile("package.mustache", "", "package.json"));
+        supportingFiles.add(new SupportingFile("index.mustache", sourceFolder, "index.js"));
+        supportingFiles.add(new SupportingFile("ApiClient.mustache", sourceFolder, "ApiClient.js"));
     }
 
     @Override
@@ -131,7 +228,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
     @Override
     public String toVarName(String name) {
         // sanitize name
-        name = sanitizeName(name);
+        name = sanitizeName(name);  // FIXME parameter should not be assigned. Also declare it as "final"
 
         if("_".equals(name)) {
           name = "_u";
@@ -162,7 +259,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
 
     @Override
     public String toModelName(String name) {
-        name = sanitizeName(name);
+        name = sanitizeName(name);  // FIXME parameter should not be assigned. Also declare it as "final"
 
         // model name cannot use reserved keyword, e.g. return
         if (reservedWords.contains(name)) {
@@ -181,16 +278,25 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
     }
 
     @Override
+    public String toModelImport(String name) {
+        return toModelName(name);
+    }
+
+    @Override
+    public String toApiImport(String name) {
+        return toApiName(name);
+    }
+
+    @Override
     public String getTypeDeclaration(Property p) {
         if (p instanceof ArrayProperty) {
             ArrayProperty ap = (ArrayProperty) p;
             Property inner = ap.getItems();
-            return getSwaggerType(p); // TODO: + "/* <" + getTypeDeclaration(inner) + "> */";
+            return "[" + getTypeDeclaration(inner) + "]";
         } else if (p instanceof MapProperty) {
             MapProperty mp = (MapProperty) p;
             Property inner = mp.getAdditionalProperties();
-
-            return getSwaggerType(p) + "<String, " + getTypeDeclaration(inner) + ">";
+            return "{String: " + getTypeDeclaration(inner) + "}";
         }
         return super.getTypeDeclaration(p);
     }
@@ -198,87 +304,32 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
     @Override
     public String toDefaultValue(Property p) {
         if (p instanceof ArrayProperty) {
-            final ArrayProperty ap = (ArrayProperty) p;
-            final String pattern;
-            //if (fullJavaUtil) {
-            //    pattern = "new ArrayList()";
-            //} else {
-            //    pattern = "new ArrayList<%s>()";
-            //}
-            
-            pattern = "new Array()";
-            return String.format(pattern, getTypeDeclaration(ap.getItems()));
+            return "[]";
         } else if (p instanceof MapProperty) {
-            final MapProperty ap = (MapProperty) p;
-            final String pattern;
-            if (fullJavaUtil) {
-                pattern = "new java.util.HashMap<String, %s>()";
-            } else {
-                pattern = "new HashMap<String, %s>()";
-            }
-            return String.format(pattern, getTypeDeclaration(ap.getAdditionalProperties()));
-            
-        } else if (p instanceof LongProperty) {
-            LongProperty dp = (LongProperty) p;
-            if (dp.getDefault() != null) {
-                return dp.getDefault().toString()+"l";
-            }
-           return "null";
-           
-           // added for Javascript
+            return "{}";
         } else if (p instanceof RefProperty) {
-        	RefProperty rp = (RefProperty)p;
-        	System.out.println("rp: " + rp.getName() + rp.getAccess() + rp.getDescription() + rp.getExample() + rp.getFormat() + rp.getSimpleRef() + rp.getTitle() + rp.getType());
-        	
-        	return "new " +rp.getSimpleRef()  + "()"; 
+            return "new " + getTypeDeclaration(p) + "()";
         }
-        
-        System.out.println("property: " + p);
-        
+
         return super.toDefaultValue(p);
     }
-    
 
     @Override
     public String toDefaultValueWithParam(String name, Property p) {
-        if (p instanceof ArrayProperty) {
-            final ArrayProperty ap = (ArrayProperty) p;
-            final String pattern;
-//            if (fullJavaUtil) {
-//                pattern = "new java.util.ArrayList<%s>()";
-//            } else {
-//                pattern = "new ArrayList<%s>()" ;
-//            }
-            pattern = " = new Array()" ;
-            
-            return String.format(pattern, getTypeDeclaration(ap.getItems()))+ ";";
-        } else if (p instanceof MapProperty) {
-            final MapProperty ap = (MapProperty) p;
-            final String pattern;
-            if (fullJavaUtil) {
-                pattern = " = new java.util.HashMap<String, %s>()";
-            } else {
-                pattern = "new HashMap<String, %s>()";
-            }
-            return String.format(pattern, getTypeDeclaration(ap.getAdditionalProperties()))+ ";";
-            
-        } else if (p instanceof LongProperty) {
-            LongProperty dp = (LongProperty) p;
-            return " = data." + name + ";";
-           
-           // added for Javascript
-        } else if (p instanceof RefProperty) {
-        	RefProperty rp = (RefProperty)p;
-        	System.out.println("rp: " + rp.getName() + rp.getAccess() + rp.getDescription() + rp.getExample() + rp.getFormat() + rp.getSimpleRef() + rp.getTitle() + rp.getType());
-        	
-        	return ".constructFromObject(data." + name + ");"; 
+        if (p instanceof RefProperty) {
+            return ".constructFromObject(data['" + name + "']);";
+        } else {
+          String type = normalizeType(getTypeDeclaration(p));
+          return " = ApiClient.convertToType(data['" + name + "'], " + type + ");";
         }
-        
-        System.out.println("property: " + p);
-        
-        return super.toDefaultValueWithParam(name, p);
     }
 
+    /**
+     * Normalize type by wrapping primitive types with single quotes.
+     */
+    public String normalizeType(String type) {
+      return type.replaceAll("\\b(Boolean|Integer|Number|String|Date)\\b", "'$1'");
+    }
 
     @Override
     public String getSwaggerType(Property p) {
@@ -286,7 +337,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
         String type = null;
         if (typeMapping.containsKey(swaggerType)) {
             type = typeMapping.get(swaggerType);
-            if (languageSpecificPrimitives.contains(type) || type.indexOf(".") >= 0) {
+            if (!needToImport(type)) {
                 return type;
             }
         } else {
@@ -314,13 +365,22 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
     }
 
     @Override
+    public CodegenOperation fromOperation(String path, String httpMethod, Operation operation, Map<String, Model> definitions, Swagger swagger) {
+      CodegenOperation op = super.fromOperation(path, httpMethod, operation, definitions, swagger);
+      if (op.returnType != null) {
+        op.returnType = normalizeType(op.returnType);
+      }
+      return op;
+    }
+
+    @Override
     public CodegenModel fromModel(String name, Model model, Map<String, Model> allDefinitions) {
         CodegenModel codegenModel = super.fromModel(name, model, allDefinitions);
 
         if (allDefinitions != null && codegenModel != null && codegenModel.parent != null && codegenModel.hasEnums) {
             final Model parentModel = allDefinitions.get(toModelName(codegenModel.parent));
             final CodegenModel parentCodegenModel = super.fromModel(codegenModel.parent, parentModel);
-            codegenModel = this.reconcileInlineEnums(codegenModel, parentCodegenModel);
+            codegenModel = JavascriptClientCodegen.reconcileInlineEnums(codegenModel, parentCodegenModel);
         }
 
         return codegenModel;
@@ -373,41 +433,20 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
         return objs;
     }
 
-    public Map<String, Object> postProcessOperations(Map<String, Object> objs) {
-        if("retrofit".equals(getLibrary())) {
-            Map<String, Object> operations = (Map<String, Object>) objs.get("operations");
-            if (operations != null) {
-                List<CodegenOperation> ops = (List<CodegenOperation>) operations.get("operation");
-                for (CodegenOperation operation : ops) {
-                    if (operation.hasConsumes == Boolean.TRUE) {
-                        Map<String, String> firstType = operation.consumes.get(0);
-                        if (firstType != null) {
-                            if ("multipart/form-data".equals(firstType.get("mediaType"))) {
-                                operation.isMultipart = Boolean.TRUE;
-                            }
-                        }
-                    }
-                    if (operation.returnType == null) {
-                        operation.returnType = "Void";
-                    }
-                }
-            }
-        }
-        return objs;
-    }
-
+    @Override
     protected boolean needToImport(String type) {
-        return super.needToImport(type) && type.indexOf(".") < 0;
+        return !defaultIncludes.contains(type)
+            && !languageSpecificPrimitives.contains(type);
     }
 
-    private String findCommonPrefixOfVars(List<String> vars) {
+    private static String findCommonPrefixOfVars(List<String> vars) {
         String prefix = StringUtils.getCommonPrefix(vars.toArray(new String[vars.size()]));
         // exclude trailing characters that should be part of a valid variable
         // e.g. ["status-on", "status-off"] => "status-" (not "status-o")
         return prefix.replaceAll("[a-zA-Z0-9]+\\z", "");
     }
 
-    private String toEnumVarName(String value) {
+    private static String toEnumVarName(String value) {
         String var = value.replaceAll("\\W+", "_").toUpperCase();
         if (var.matches("\\d.*")) {
             return "_" + var;
@@ -416,7 +455,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
         }
     }
 
-    private CodegenModel reconcileInlineEnums(CodegenModel codegenModel, CodegenModel parentCodegenModel) {
+    private static CodegenModel reconcileInlineEnums(CodegenModel codegenModel, CodegenModel parentCodegenModel) {
         // This generator uses inline classes to define enums, which breaks when
         // dealing with models that have subTypes. To clean this up, we will analyze
         // the parent and child models, look for enums that match, and remove
@@ -449,7 +488,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
                     }
                 }
             }
-            
+
             if(removedChildEnum) {
                 // If we removed an entry from this model's vars, we need to ensure hasMore is updated
                 int count = 0, numVars = codegenProperties.size();
@@ -464,40 +503,7 @@ public class JavascriptClientCodegen extends DefaultCodegen implements CodegenCo
         return codegenModel;
     }
 
-    public void setInvokerPackage(String invokerPackage) {
-        this.invokerPackage = invokerPackage;
-    }
-
-    public void setGroupId(String groupId) {
-        this.groupId = groupId;
-    }
-
-    public void setArtifactId(String artifactId) {
-        this.artifactId = artifactId;
-    }
-
-    public void setArtifactVersion(String artifactVersion) {
-        this.artifactVersion = artifactVersion;
-    }
-
-    public void setSourceFolder(String sourceFolder) {
-        this.sourceFolder = sourceFolder;
-    }
-
-    public void setLocalVariablePrefix(String localVariablePrefix) {
-        this.localVariablePrefix = localVariablePrefix;
-    }
-
-
-    public Boolean getSerializableModel() {
-        return serializableModel;
-    }
-
-    public void setSerializableModel(Boolean serializableModel) {
-        this.serializableModel = serializableModel;
-    }
-
-    private String sanitizePackageName(String packageName) {
+    private static String sanitizePackageName(String packageName) { // FIXME parameter should not be assigned. Also declare it as "final"
         packageName = packageName.trim();
         packageName = packageName.replaceAll("[^a-zA-Z0-9_\\.]", "_");
         if(Strings.isNullOrEmpty(packageName)) {

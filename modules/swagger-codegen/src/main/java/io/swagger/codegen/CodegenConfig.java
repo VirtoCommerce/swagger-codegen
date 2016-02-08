@@ -19,9 +19,13 @@ public interface CodegenConfig {
 
     Map<String, Object> additionalProperties();
 
+    String testPackage();
+
     String apiPackage();
 
     String apiFileFolder();
+
+    String apiTestFileFolder();
 
     String fileSuffix();
 
@@ -32,6 +36,8 @@ public interface CodegenConfig {
     String embeddedTemplateDir();
 
     String modelFileFolder();
+
+    String modelTestFileFolder();
 
     String modelPackage();
 
@@ -87,6 +93,10 @@ public interface CodegenConfig {
 
     Map<String, String> modelTemplateFiles();
 
+    Map<String, String> apiTestTemplateFiles();
+
+    Map<String, String> modelTestTemplateFiles();
+
     Set<String> languageSpecificPrimitives();
 
     void preprocessSwagger(Swagger swagger);
@@ -97,6 +107,10 @@ public interface CodegenConfig {
 
     String toModelFilename(String name);
 
+    String toApiTestFilename(String name);
+
+    String toModelTestFilename(String name);
+    
     String toModelImport(String name);
 
     String toApiImport(String name);
@@ -109,7 +123,13 @@ public interface CodegenConfig {
 
     Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs);
 
+    void postProcessModelProperty(CodegenModel model, CodegenProperty property);
+
+    void postProcessParameter(CodegenParameter parameter);
+
     String apiFilename(String templateName, String tag);
+
+    String apiTestFilename(String templateName, String tag);
 
     boolean shouldOverwrite(String filename);
 

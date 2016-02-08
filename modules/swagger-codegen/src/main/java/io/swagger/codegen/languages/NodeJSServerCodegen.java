@@ -1,18 +1,29 @@
 package io.swagger.codegen.languages;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
+import com.fasterxml.jackson.databind.SerializerProvider;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Multimap;
 import io.swagger.codegen.*;
-import io.swagger.models.Swagger;
+import io.swagger.models.*;
 import io.swagger.util.Yaml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.*;
 import java.util.Map.Entry;
 
 public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig {
+	
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeJSServerCodegen.class);
+
     protected String apiVersion = "1.0.0";
     protected int serverPort = 8080;
     protected String projectName = "swagger-server";
@@ -97,6 +108,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
         }
     }
 
+    @Override
     public String apiPackage() {
         return "controllers";
     }
@@ -107,6 +119,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
      * @return the CodegenType for this generator
      * @see io.swagger.codegen.CodegenType
      */
+    @Override
     public CodegenType getTag() {
         return CodegenType.SERVER;
     }
@@ -117,6 +130,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
      *
      * @return the friendly name for the generator
      */
+    @Override
     public String getName() {
         return "nodejs";
     }
@@ -127,6 +141,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
      *
      * @return A string value for the help message
      */
+    @Override
     public String getHelp() {
         return "Generates a nodejs server library using the swagger-tools project.  By default, " +
                 "it will also generate service classes--which you can disable with the `-Dnoservice` environment variable.";
@@ -173,6 +188,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
         List<CodegenOperation> operations = (List<CodegenOperation>) objectMap.get("operation");
         for (CodegenOperation operation : operations) {
             operation.httpMethod = operation.httpMethod.toLowerCase();
+
             List<CodegenParameter> params = operation.allParams;
             if (params != null && params.size() == 0) {
                 operation.allParams = null;
@@ -200,7 +216,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
     }
 
     @SuppressWarnings("unchecked")
-    private List<Map<String, Object>> getOperations(Map<String, Object> objs) {
+    private static List<Map<String, Object>> getOperations(Map<String, Object> objs) {
         List<Map<String, Object>> result = new ArrayList<Map<String, Object>>();
         Map<String, Object> apiInfo = (Map<String, Object>) objs.get("apiInfo");
         List<Map<String, Object>> apis = (List<Map<String, Object>>) apiInfo.get("apis");
@@ -210,7 +226,7 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
         return result;
     }
 
-    private List<Map<String, Object>> sortOperationsByPath(List<CodegenOperation> ops) {
+    private static List<Map<String, Object>> sortOperationsByPath(List<CodegenOperation> ops) {
         Multimap<String, CodegenOperation> opsByPath = ArrayListMultimap.create();
 
         for (CodegenOperation op : ops) {
@@ -234,13 +250,66 @@ public class NodeJSServerCodegen extends DefaultCodegen implements CodegenConfig
     }
 
     @Override
+    public void preprocessSwagger(Swagger swagger) {
+        String host = swagger.getHost();
+        String port = "8080";
+        if (host != null) {
+            String[] parts = host.split(":");
+            if (parts.length > 1) {
+                port = parts[1];
+            }
+        }
+        this.additionalProperties.put("serverPort", port);
+        
+        if (swagger.getInfo() != null) {
+            Info info = swagger.getInfo();
+            if (info.getTitle() != null) {
+                // when info.title is defined, use it for projectName
+                // used in package.json
+                projectName = dashize(info.getTitle());
+                this.additionalProperties.put("projectName", projectName);
+            }
+        }
+
+        // need vendor extensions for x-swagger-router-controller
+        Map<String, Path> paths = swagger.getPaths();
+        if(paths != null) {
+            for(String pathname : paths.keySet()) {
+                Path path = paths.get(pathname);
+                Map<HttpMethod, Operation> operationMap = path.getOperationMap();
+                if(operationMap != null) {
+                    for(HttpMethod method : operationMap.keySet()) {
+                        Operation operation = operationMap.get(method);
+                        String tag = "default";
+                        if(operation.getTags() != null && operation.getTags().size() > 0) {
+                            tag = toApiName(operation.getTags().get(0));
+                        }
+                        if(operation.getOperationId() == null) {
+                            operation.setOperationId(getOrGenerateOperationId(operation, pathname, method.toString()));
+                        }
+                        operation.getVendorExtensions().put("x-swagger-router-controller", toApiName(tag));
+                    }
+                }
+            }
+        }
+    }
+
+        @Override
     public Map<String, Object> postProcessSupportingFileData(Map<String, Object> objs) {
         Swagger swagger = (Swagger)objs.get("swagger");
         if(swagger != null) {
             try {
-                objs.put("swagger-yaml", Yaml.mapper().writeValueAsString(swagger));
+                SimpleModule module = new SimpleModule();
+                module.addSerializer(Double.class, new JsonSerializer<Double>() {
+                    @Override
+                    public void serialize(Double val, JsonGenerator jgen,
+                                   SerializerProvider provider) throws IOException, JsonProcessingException {
+                        jgen.writeNumber(new BigDecimal(val));
+                    }
+                });
+                objs.put("swagger-yaml", Yaml.mapper().registerModule(module).writeValueAsString(swagger));
             } catch (JsonProcessingException e) {
-                e.printStackTrace();
+                LOGGER.error(e.getMessage(), e);
             }
         }
         for (Map<String, Object> operations : getOperations(objs)) {

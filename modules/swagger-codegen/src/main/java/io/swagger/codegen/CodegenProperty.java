@@ -31,13 +31,58 @@ public class CodegenProperty {
     public Double maximum;
     public Boolean exclusiveMinimum;
     public Boolean exclusiveMaximum;
-    public Boolean hasMore = null, required = null, secondaryParam = null;
+    public Boolean hasMore, required, secondaryParam;
     public Boolean isPrimitiveType, isContainer, isNotContainer;
     public boolean isEnum;
     public Boolean isReadOnly = false;
     public List<String> _enum;
     public Map<String, Object> allowableValues;
     public CodegenProperty items;
+    public Map<String, Object> vendorExtensions;
+
+    @Override
+    public int hashCode()
+    {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((_enum == null) ? 0 : _enum.hashCode());
+        result = prime * result + ((allowableValues == null) ? 0 : allowableValues.hashCode());
+        result = prime * result + ((baseName == null) ? 0 : baseName.hashCode());
+        result = prime * result + ((baseType == null) ? 0 : baseType.hashCode());
+        result = prime * result + ((complexType == null) ? 0 : complexType.hashCode());
+        result = prime * result + ((containerType == null) ? 0 : containerType.hashCode());
+        result = prime * result + ((datatype == null) ? 0 : datatype.hashCode());
+        result = prime * result + ((datatypeWithEnum == null) ? 0 : datatypeWithEnum.hashCode());
+        result = prime * result + ((defaultValue == null) ? 0 : defaultValue.hashCode());
+        result = prime * result + ((defaultValueWithParam == null) ? 0 : defaultValueWithParam.hashCode());
+        result = prime * result + ((description == null) ? 0 : description.hashCode());
+        result = prime * result + ((example == null) ? 0 : example.hashCode());
+        result = prime * result + ((exclusiveMaximum == null) ? 0 : exclusiveMaximum.hashCode());
+        result = prime * result + ((exclusiveMinimum == null) ? 0 : exclusiveMinimum.hashCode());
+        result = prime * result + ((getter == null) ? 0 : getter.hashCode());
+        result = prime * result + ((hasMore == null) ? 0 : hasMore.hashCode());
+        result = prime * result + ((isContainer == null) ? 0 : isContainer.hashCode());
+        result = prime * result + (isEnum ? 1231 : 1237);
+        result = prime * result + ((isNotContainer == null) ? 0 : isNotContainer.hashCode());
+        result = prime * result + ((isPrimitiveType == null) ? 0 : isPrimitiveType.hashCode());
+        result = prime * result + ((isReadOnly == null) ? 0 : isReadOnly.hashCode());
+        result = prime * result + ((items == null) ? 0 : items.hashCode());
+        result = prime * result + ((jsonSchema == null) ? 0 : jsonSchema.hashCode());
+        result = prime * result + ((max == null) ? 0 : max.hashCode());
+        result = prime * result + ((maxLength == null) ? 0 : maxLength.hashCode());
+        result = prime * result + ((maximum == null) ? 0 : maximum.hashCode());
+        result = prime * result + ((min == null) ? 0 : min.hashCode());
+        result = prime * result + ((minLength == null) ? 0 : minLength.hashCode());
+        result = prime * result + ((minimum == null) ? 0 : minimum.hashCode());
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((pattern == null) ? 0 : pattern.hashCode());
+        result = prime * result + ((required == null) ? 0 : required.hashCode());
+        result = prime * result + ((secondaryParam == null) ? 0 : secondaryParam.hashCode());
+        result = prime * result + ((setter == null) ? 0 : setter.hashCode());
+        result = prime * result + ((unescapedDescription == null) ? 0 : unescapedDescription.hashCode());
+        result = prime * result + ((vendorExtensions == null) ? 0 : vendorExtensions.hashCode());
+        return result;
+    }
 
     @Override
     public boolean equals(Object obj) {
@@ -136,6 +181,9 @@ public class CodegenProperty {
             return false;
         }
         if (this.allowableValues != other.allowableValues && (this.allowableValues == null || !this.allowableValues.equals(other.allowableValues))) {
+            return false;
+        }
+        if (this.vendorExtensions != other.vendorExtensions && (this.vendorExtensions == null || !this.vendorExtensions.equals(other.vendorExtensions))) {
             return false;
         }
         return true;

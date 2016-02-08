@@ -185,6 +185,19 @@ public class ApiClientTest {
     }
 
     @Test
+    public void testGetAndSetConnectTimeout() {
+        // connect timeout defaults to 10 seconds
+        assertEquals(10000, apiClient.getConnectTimeout());
+        assertEquals(10000, apiClient.getHttpClient().getConnectTimeout());
+
+        apiClient.setConnectTimeout(0);
+        assertEquals(0, apiClient.getConnectTimeout());
+        assertEquals(0, apiClient.getHttpClient().getConnectTimeout());
+
+        apiClient.setConnectTimeout(10000);
+    }
+
+    @Test
     public void testParameterToPairsWhenNameIsInvalid() throws Exception {
         List<Pair> pairs_a = apiClient.parameterToPairs("csv", null, new Integer(1));
         List<Pair> pairs_b = apiClient.parameterToPairs("csv", "", new Integer(1));
@@ -263,5 +276,18 @@ public class ApiClientTest {
             // must equal input values
             assertEquals(values.size(), pairValueSplit.length);
         }
+    }
+
+    @Test
+    public void testSanitizeFilename() {
+        assertEquals("sun", apiClient.sanitizeFilename("sun"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("../sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("/var/tmp/sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("./sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("..\\sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("\\var\\tmp\\sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename("c:\\var\\tmp\\sun.gif"));
+        assertEquals("sun.gif", apiClient.sanitizeFilename(".\\sun.gif"));
     }
 }

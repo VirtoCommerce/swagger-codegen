@@ -76,6 +76,9 @@ public class DartClientCodegen extends DefaultCodegen implements CodegenConfig {
         typeMapping.put("Date", "DateTime");
         typeMapping.put("date", "DateTime");
         typeMapping.put("File", "MultipartFile");
+        //TODO binary should be mapped to byte array
+        // mapped to String as a workaround
+        typeMapping.put("binary", "String");
 
         cliOptions.add(new CliOption(BROWSER_CLIENT, "Is the client browser based"));
         cliOptions.add(new CliOption(PUB_NAME, "Name in generated pubspec"));
@@ -84,14 +87,17 @@ public class DartClientCodegen extends DefaultCodegen implements CodegenConfig {
         cliOptions.add(new CliOption(CodegenConstants.SOURCE_FOLDER, "source folder for generated code"));
     }
 
+    @Override
     public CodegenType getTag() {
         return CodegenType.CLIENT;
     }
 
+    @Override
     public String getName() {
         return "dart";
     }
 
+    @Override
     public String getHelp() {
         return "Generates a Dart client library.";
     }
@@ -157,6 +163,7 @@ public class DartClientCodegen extends DefaultCodegen implements CodegenConfig {
         return outputFolder + "/" + sourceFolder + "/" + apiPackage().replace('.', File.separatorChar);
     }
 
+    @Override
     public String modelFileFolder() {
         return outputFolder + "/" + sourceFolder + "/" + modelPackage().replace('.', File.separatorChar);
     }
@@ -164,7 +171,7 @@ public class DartClientCodegen extends DefaultCodegen implements CodegenConfig {
     @Override
     public String toVarName(String name) {
         // replace - with _ e.g. created-at => created_at
-        name = name.replaceAll("-", "_");
+        name = name.replaceAll("-", "_"); // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
 
         // if it's all uppper case, do nothing
         if (name.matches("^[A-Z_]*$")) {
@@ -214,15 +221,10 @@ public class DartClientCodegen extends DefaultCodegen implements CodegenConfig {
     @Override
     public String toDefaultValue(Property p) {
         if (p instanceof MapProperty) {
-            MapProperty ap = (MapProperty) p;
-            String inner = getSwaggerType(ap.getAdditionalProperties());
             return "{}";
         } else if (p instanceof ArrayProperty) {
-            ArrayProperty ap = (ArrayProperty) p;
-            String inner = getSwaggerType(ap.getItems());
             return "[]";
         }
-
         return super.toDefaultValue(p);
     }
 

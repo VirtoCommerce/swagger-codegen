@@ -63,7 +63,9 @@ public class AkkaScalaClientCodegen extends DefaultCodegen implements CodegenCon
      * unmarshalling problems and any other RuntimeException will be considered as ApiErrors.
      */
     protected boolean onlyOneSuccess = true;
-    Logger LOGGER = LoggerFactory.getLogger(AkkaScalaClientCodegen.class);
+    
+    @SuppressWarnings("hiding")
+    protected Logger LOGGER = LoggerFactory.getLogger(AkkaScalaClientCodegen.class);
 
     public AkkaScalaClientCodegen() {
         super();
@@ -154,14 +156,17 @@ public class AkkaScalaClientCodegen extends DefaultCodegen implements CodegenCon
         cliOptions.add(new CliOption(CodegenConstants.API_PACKAGE, CodegenConstants.API_PACKAGE_DESC));
     }
 
+    @Override
     public CodegenType getTag() {
         return CodegenType.CLIENT;
     }
 
+    @Override
     public String getName() {
         return "akka-scala";
     }
 
+    @Override
     public String getHelp() {
         return "Generates a Scala client library base on Akka/Spray.";
     }
@@ -176,6 +181,7 @@ public class AkkaScalaClientCodegen extends DefaultCodegen implements CodegenCon
         return outputFolder + "/" + sourceFolder + "/" + apiPackage().replace('.', File.separatorChar);
     }
 
+    @Override
     public String modelFileFolder() {
         return outputFolder + "/" + sourceFolder + "/" + modelPackage().replace('.', File.separatorChar);
     }
@@ -321,6 +327,7 @@ public class AkkaScalaClientCodegen extends DefaultCodegen implements CodegenCon
         }
     }
 
+    @Override
     public String toDefaultValue(Property p) {
         if (!p.getRequired()) {
             return "None";

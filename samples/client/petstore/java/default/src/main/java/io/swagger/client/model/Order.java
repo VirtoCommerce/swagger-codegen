@@ -1,17 +1,17 @@
 package io.swagger.client.model;
 
-import io.swagger.client.StringUtil;
+import java.util.Objects;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 
 
-import java.util.Objects;
-
-import io.swagger.annotations.*;
-import com.fasterxml.jackson.annotation.*;
 
 
-@ApiModel(description = "")
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2015-11-29T00:18:25.953+08:00")
+
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-01-15T19:19:23.415+08:00")
 public class Order   {
   
   private Long id = null;
@@ -20,23 +20,23 @@ public class Order   {
   private Date shipDate = null;
 
 
-public enum StatusEnum {
-  PLACED("placed"),
-  APPROVED("approved"),
-  DELIVERED("delivered");
+  public enum StatusEnum {
+    PLACED("placed"),
+    APPROVED("approved"),
+    DELIVERED("delivered");
 
-  private String value;
+    private String value;
 
-  StatusEnum(String value) {
-    this.value = value;
+    StatusEnum(String value) {
+      this.value = value;
+    }
+
+    @Override
+    @JsonValue
+    public String toString() {
+      return value;
+    }
   }
-
-  @Override
-  @JsonValue
-  public String toString() {
-    return value;
-  }
-}
 
   private StatusEnum status = null;
   private Boolean complete = null;
@@ -44,6 +44,7 @@ public enum StatusEnum {
   
   /**
    **/
+  
   @ApiModelProperty(value = "")
   @JsonProperty("id")
   public Long getId() {
@@ -56,6 +57,7 @@ public enum StatusEnum {
   
   /**
    **/
+  
   @ApiModelProperty(value = "")
   @JsonProperty("petId")
   public Long getPetId() {
@@ -68,6 +70,7 @@ public enum StatusEnum {
   
   /**
    **/
+  
   @ApiModelProperty(value = "")
   @JsonProperty("quantity")
   public Integer getQuantity() {
@@ -80,6 +83,7 @@ public enum StatusEnum {
   
   /**
    **/
+  
   @ApiModelProperty(value = "")
   @JsonProperty("shipDate")
   public Date getShipDate() {
@@ -93,6 +97,7 @@ public enum StatusEnum {
   /**
    * Order Status
    **/
+  
   @ApiModelProperty(value = "Order Status")
   @JsonProperty("status")
   public StatusEnum getStatus() {
@@ -105,6 +110,7 @@ public enum StatusEnum {
   
   /**
    **/
+  
   @ApiModelProperty(value = "")
   @JsonProperty("complete")
   public Boolean getComplete() {
@@ -117,7 +123,7 @@ public enum StatusEnum {
   
 
   @Override
-  public boolean equals(Object o) {
+  public boolean equals(java.lang.Object o) {
     if (this == o) {
       return true;
     }
@@ -125,12 +131,14 @@ public enum StatusEnum {
       return false;
     }
     Order order = (Order) o;
-    return Objects.equals(id, order.id) &&
+
+    return true && Objects.equals(id, order.id) &&
         Objects.equals(petId, order.petId) &&
         Objects.equals(quantity, order.quantity) &&
         Objects.equals(shipDate, order.shipDate) &&
         Objects.equals(status, order.status) &&
-        Objects.equals(complete, order.complete);
+        Objects.equals(complete, order.complete)
+    ;
   }
 
   @Override
@@ -139,17 +147,29 @@ public enum StatusEnum {
   }
 
   @Override
-  public String toString()  {
+  public String toString() {
     StringBuilder sb = new StringBuilder();
     sb.append("class Order {\n");
     
-    sb.append("    id: ").append(StringUtil.toIndentedString(id)).append("\n");
-    sb.append("    petId: ").append(StringUtil.toIndentedString(petId)).append("\n");
-    sb.append("    quantity: ").append(StringUtil.toIndentedString(quantity)).append("\n");
-    sb.append("    shipDate: ").append(StringUtil.toIndentedString(shipDate)).append("\n");
-    sb.append("    status: ").append(StringUtil.toIndentedString(status)).append("\n");
-    sb.append("    complete: ").append(StringUtil.toIndentedString(complete)).append("\n");
+    sb.append("    id: ").append(toIndentedString(id)).append("\n");
+    sb.append("    petId: ").append(toIndentedString(petId)).append("\n");
+    sb.append("    quantity: ").append(toIndentedString(quantity)).append("\n");
+    sb.append("    shipDate: ").append(toIndentedString(shipDate)).append("\n");
+    sb.append("    status: ").append(toIndentedString(status)).append("\n");
+    sb.append("    complete: ").append(toIndentedString(complete)).append("\n");
     sb.append("}");
     return sb.toString();
   }
+
+  /**
+   * Convert the given object to string with each line indented by 4 spaces
+   * (except the first line).
+   */
+  private String toIndentedString(java.lang.Object o) {
+    if (o == null) {
+      return "null";
+    }
+    return o.toString().replace("\n", "\n    ");
+  }
 }
+

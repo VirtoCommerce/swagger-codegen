@@ -1,7 +1,7 @@
 # coding: utf-8
 
 """
-Copyright 2015 SmartBear Software
+Copyright 2016 SmartBear Software
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -106,6 +106,11 @@ class Tag(object):
                     lambda x: x.to_dict() if hasattr(x, "to_dict") else x,
                     value
                 ))
+            elif isinstance(value, dict):
+                result[attr] = dict(map(
+                    lambda k, v: (k, v.to_dict()) if hasattr(v, "to_dict") else (k, v),
+                    value.iteritems()
+                ))
             elif hasattr(value, "to_dict"):
                 result[attr] = value.to_dict()
             else:
@@ -125,14 +130,14 @@ class Tag(object):
         """
         return self.to_str()
 
-    def __eq__(self, other): 
+    def __eq__(self, other):
         """
         Returns true if both objects are equal
         """
         return self.__dict__ == other.__dict__
 
     def __ne__(self, other):
-        """ 
+        """
         Returns true if both objects are not equal
         """
         return not self == other

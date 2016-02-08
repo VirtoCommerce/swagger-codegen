@@ -4,10 +4,9 @@ using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.Serialization;
 using Newtonsoft.Json;
-
-
 
 namespace IO.Swagger.Model
 {
@@ -16,7 +15,7 @@ namespace IO.Swagger.Model
     /// 
     /// </summary>
     [DataContract]
-    public class Pet : IEquatable<Pet>
+    public partial class Pet :  IEquatable<Pet>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="Pet" /> class.
@@ -113,7 +112,7 @@ namespace IO.Swagger.Model
         /// <summary>
         /// Returns true if Pet instances are equal
         /// </summary>
-        /// <param name="obj">Instance of Pet to be compared</param>
+        /// <param name="other">Instance of Pet to be compared</param>
         /// <returns>Boolean</returns>
         public bool Equals(Pet other)
         {
@@ -167,28 +166,26 @@ namespace IO.Swagger.Model
                 // Suitable nullity checks etc, of course :)
                 
                 if (this.Id != null)
-                    hash = hash * 57 + this.Id.GetHashCode();
+                    hash = hash * 59 + this.Id.GetHashCode();
                 
                 if (this.Category != null)
-                    hash = hash * 57 + this.Category.GetHashCode();
+                    hash = hash * 59 + this.Category.GetHashCode();
                 
                 if (this.Name != null)
-                    hash = hash * 57 + this.Name.GetHashCode();
+                    hash = hash * 59 + this.Name.GetHashCode();
                 
                 if (this.PhotoUrls != null)
-                    hash = hash * 57 + this.PhotoUrls.GetHashCode();
+                    hash = hash * 59 + this.PhotoUrls.GetHashCode();
                 
                 if (this.Tags != null)
-                    hash = hash * 57 + this.Tags.GetHashCode();
+                    hash = hash * 59 + this.Tags.GetHashCode();
                 
                 if (this.Status != null)
-                    hash = hash * 57 + this.Status.GetHashCode();
+                    hash = hash * 59 + this.Status.GetHashCode();
                 
                 return hash;
             }
         }
 
     }
-
-
 }

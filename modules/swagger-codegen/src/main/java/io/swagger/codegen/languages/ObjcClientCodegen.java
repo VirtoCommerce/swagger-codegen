@@ -89,19 +89,24 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
         // ref: http://www.tutorialspoint.com/objective_c/objective_c_basic_syntax.htm
         reservedWords = new HashSet<String>(
                 Arrays.asList(
-                        "auto", "else", "long", "switch",
-                        "break", "enum", "register", "typedef",
-                        "case", "extern", "return", "union",
-                        "char", "float", "short", "unsigned",
-                        "const", "for", "signed", "void",
-                        "continue", "goto", "sizeof", "volatile",
-                        "default", "if", "id", "static", "while",
-                        "do", "int", "struct", "_Packed",
-                        "double", "protocol", "interface", "implementation",
-                        "NSObject", "NSInteger", "NSNumber", "CGFloat",
-                        "property", "nonatomic", "retain", "strong",
-                        "weak", "unsafe_unretained", "readwrite", "readonly",
-                        "description"
+                    // local variable names in API methods (endpoints)
+                    "resourcePath", "pathParams", "queryParams", "headerParams",
+                    "responseContentType", "requestContentType", "authSettings",
+                    "formParams", "files", "bodyParam",
+                    // objc reserved words
+                    "auto", "else", "long", "switch",
+                    "break", "enum", "register", "typedef",
+                    "case", "extern", "return", "union",
+                    "char", "float", "short", "unsigned",
+                    "const", "for", "signed", "void",
+                    "continue", "goto", "sizeof", "volatile",
+                    "default", "if", "id", "static", "while",
+                    "do", "int", "struct", "_Packed",
+                    "double", "protocol", "interface", "implementation",
+                    "NSObject", "NSInteger", "NSNumber", "CGFloat",
+                    "property", "nonatomic", "retain", "strong",
+                    "weak", "unsafe_unretained", "readwrite", "readonly",
+                    "description"
                 ));
 
         importMapping = new HashMap<String, String>();
@@ -133,14 +138,17 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
         cliOptions.add(new CliOption(LICENSE, "License to use in the podspec file.").defaultValue("MIT"));
     }
 
+    @Override
     public CodegenType getTag() {
         return CodegenType.CLIENT;
     }
 
+    @Override
     public String getName() {
         return "objc";
     }
 
+    @Override
     public String getHelp() {
         return "Generates an Objective-C client library.";
     }
@@ -211,12 +219,8 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
     @Override
     public String toInstantiationType(Property p) {
         if (p instanceof MapProperty) {
-            MapProperty ap = (MapProperty) p;
-            String inner = getSwaggerType(ap.getAdditionalProperties());
             return instantiationTypes.get("map");
         } else if (p instanceof ArrayProperty) {
-            ArrayProperty ap = (ArrayProperty) p;
-            String inner = getSwaggerType(ap.getItems());
             return instantiationTypes.get("array");
         } else {
             return null;
@@ -304,7 +308,7 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
 
     @Override
     public String toModelName(String type) {
-        type = type.replaceAll("[^0-9a-zA-Z_]", "_");
+        type = type.replaceAll("[^0-9a-zA-Z_]", "_"); // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
 
         // language build-in classes
         if (typeMapping.keySet().contains(type) ||
@@ -356,6 +360,7 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
         return classPrefix + camelize(name) + "Api";
     }
 
+    @Override
     public String toApiFilename(String name) {
         return classPrefix + camelize(name) + "Api";
     }
@@ -363,7 +368,7 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
     @Override
     public String toVarName(String name) {
         // sanitize name
-        name = sanitizeName(name);
+        name = sanitizeName(name); // FIXME: a parameter should not be assigned. Also declare the methods parameters as 'final'.
 
         // if it's all upper case, do noting
         if (name.matches("^[A-Z_]$")) {
@@ -395,10 +400,12 @@ public class ObjcClientCodegen extends DefaultCodegen implements CodegenConfig {
         return toVarName(name);
     }
 
+    @Override
     public String escapeReservedWord(String name) {
         return "_" + name;
     }
 
+    @SuppressWarnings("static-method")
     public String escapeSpecialWord(String name) {
         return "var_" + name;
     }

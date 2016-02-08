@@ -86,6 +86,7 @@ public class CodegenTest {
         final Swagger model = parseAndPrepareSwagger("src/test/resources/2_0/requiredTest.json");
 
         final DefaultCodegen codegen = new DefaultCodegen() {
+            @Override
             public String getSwaggerType(Property p) {
                 if (p != null && !p.getRequired()) {
                     return "Optional<" + super.getSwaggerType(p) + ">";
@@ -188,7 +189,7 @@ public class CodegenTest {
 
     }
 
-    private Swagger parseAndPrepareSwagger(String path) {
+    private static Swagger parseAndPrepareSwagger(String path) {
         Swagger swagger = new SwaggerParser().read(path);
         // resolve inline models
         new InlineModelResolver().flatten(swagger);
