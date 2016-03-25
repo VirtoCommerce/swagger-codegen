@@ -18,6 +18,8 @@ public interface CodegenConfig {
     String getHelp();
 
     Map<String, Object> additionalProperties();
+    
+    Map<String, Object> vendorExtensions();
 
     String testPackage();
 
@@ -26,6 +28,8 @@ public interface CodegenConfig {
     String apiFileFolder();
 
     String apiTestFileFolder();
+
+    String apiDocFileFolder();
 
     String fileSuffix();
 
@@ -38,6 +42,8 @@ public interface CodegenConfig {
     String modelFileFolder();
 
     String modelTestFileFolder();
+
+    String modelDocFileFolder();
 
     String modelPackage();
 
@@ -97,11 +103,17 @@ public interface CodegenConfig {
 
     Map<String, String> modelTestTemplateFiles();
 
+    Map<String, String> apiDocTemplateFiles();
+
+    Map<String, String> modelDocTemplateFiles();
+
     Set<String> languageSpecificPrimitives();
 
     void preprocessSwagger(Swagger swagger);
 
     void processSwagger(Swagger swagger);
+
+    String sanitizeTag(String tag);
 
     String toApiFilename(String name);
 
@@ -111,12 +123,18 @@ public interface CodegenConfig {
 
     String toModelTestFilename(String name);
     
+    String toApiDocFilename(String name);
+
+    String toModelDocFilename(String name);
+    
     String toModelImport(String name);
 
     String toApiImport(String name);
 
     void addOperationToGroup(String tag, String resourcePath, Operation operation, CodegenOperation co, Map<String, List<CodegenOperation>> operations);
 
+    Map<String, Object> postProcessAllModels(Map<String, Object> objs);
+    
     Map<String, Object> postProcessModels(Map<String, Object> objs);
 
     Map<String, Object> postProcessOperations(Map<String, Object> objs);
@@ -131,6 +149,8 @@ public interface CodegenConfig {
 
     String apiTestFilename(String templateName, String tag);
 
+    String apiDocFilename(String templateName, String tag);
+
     boolean shouldOverwrite(String filename);
 
     boolean isSkipOverwrite();
@@ -143,6 +163,25 @@ public interface CodegenConfig {
 
     /**
      * Library template (sub-template).
+     *
+     * @return libray template
      */
     String getLibrary();
+
+    void setGitUserId(String gitUserId);
+
+    String getGitUserId();
+
+    void setGitRepoId(String gitRepoId);
+
+    String getGitRepoId();
+
+    void setReleaseNote(String releaseNote);
+
+    String getReleaseNote();
+
+    void setHttpUserAgent(String httpUserAgent);
+
+    String getHttpUserAgent();
+
 }

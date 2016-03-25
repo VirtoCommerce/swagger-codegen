@@ -33,7 +33,7 @@ module Petstore
 
     def initialize(config = Configuration.default)
       @config = config
-      @user_agent = "ruby-swagger-#{VERSION}"
+      @user_agent = "Swagger-Codegen/#{VERSION}/ruby"
       @default_headers = {
         'Content-Type' => "application/json",
         'User-Agent' => @user_agent
@@ -166,7 +166,7 @@ module Petstore
         # parse date time (expecting ISO 8601 format)
         Date.parse data
       when 'Object'
-        # generic object, return directly
+        # generic object (usually a Hash), return directly
         data
       when /\AArray<(.+)>\z/
         # e.g. Array<Pet>

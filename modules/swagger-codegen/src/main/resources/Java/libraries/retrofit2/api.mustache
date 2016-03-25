@@ -12,7 +12,10 @@ import okhttp3.RequestBody;
 {{/imports}}
 
 {{^fullJavaUtil}}
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 {{/fullJavaUtil}}
 
 {{#operations}}
@@ -21,7 +24,7 @@ public interface {{classname}} {
   /**
    * {{summary}}
    * {{notes}}
-{{#allParams}}   * @param {{paramName}} {{description}}
+{{#allParams}}   * @param {{paramName}} {{description}}{{#required}} (required){{/required}}{{^required}} (optional{{#defaultValue}}, default to {{{.}}}{{/defaultValue}}){{/required}}
 {{/allParams}}   * @return Call<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>
    */
   {{#formParams}}{{#-first}}
