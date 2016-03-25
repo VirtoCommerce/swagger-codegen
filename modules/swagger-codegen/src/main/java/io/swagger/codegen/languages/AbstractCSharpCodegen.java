@@ -100,6 +100,7 @@ public abstract class AbstractCSharpCodegen extends DefaultCodegen implements Co
         // Nullable types here assume C# 2 support is not part of base
         typeMapping = new HashMap<String, String>();
         typeMapping.put("string", "string");
+        typeMapping.put("ByteArray", "byte[]");
         typeMapping.put("binary", "byte[]");
         typeMapping.put("boolean", "bool?");
         typeMapping.put("integer", "int?");
