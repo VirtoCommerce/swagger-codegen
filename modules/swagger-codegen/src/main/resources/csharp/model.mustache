@@ -35,11 +35,11 @@ namespace {{packageName}}.Model
         /// Initializes a new instance of the <see cref="{{classname}}" /> class.
         /// Initializes a new instance of the <see cref="{{classname}}" />class.
         /// </summary>
-{{#vars}}{{^isReadOnly}}        /// <param name="{{name}}">{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}{{#required}} (required){{/required}}{{#defaultValue}} (default to {{defaultValue}}){{/defaultValue}}.</param>
-{{/isReadOnly}}{{/vars}}
-        public {{classname}}({{#vars}}{{^isReadOnly}}{{{datatypeWithEnum}}} {{name}} = null{{#hasMore}}, {{/hasMore}}{{/isReadOnly}}{{/vars}})
+{{#vars}}        /// <param name="{{name}}">{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}{{#required}} (required){{/required}}{{#defaultValue}} (default to {{defaultValue}}){{/defaultValue}}.</param>
+{{/vars}}
+        public {{classname}}({{#vars}}{{{datatypeWithEnum}}} {{name}} = null{{#hasMore}}, {{/hasMore}}{{/vars}})
         {
-            {{#vars}}{{^isReadOnly}}{{#required}}// to ensure "{{name}}" is required (not null)
+            {{#vars}}{{#required}}// to ensure "{{name}}" is required (not null)
             if ({{name}} == null)
             {
                 throw new InvalidDataException("{{name}} is a required property for {{classname}} and cannot be null");
@@ -48,7 +48,7 @@ namespace {{packageName}}.Model
             {
                 this.{{name}} = {{name}};
             }
-            {{/required}}{{/isReadOnly}}{{/vars}}{{#vars}}{{^isReadOnly}}{{^required}}{{#defaultValue}}// use default value if no "{{name}}" provided
+            {{/required}}{{/vars}}{{#vars}}{{^required}}{{#defaultValue}}// use default value if no "{{name}}" provided
             if ({{name}} == null)
             {
                 this.{{name}} = {{{defaultValue}}};
@@ -58,7 +58,7 @@ namespace {{packageName}}.Model
                 this.{{name}} = {{name}};
             }
             {{/defaultValue}}{{^defaultValue}}this.{{name}} = {{name}};
-            {{/defaultValue}}{{/required}}{{/isReadOnly}}{{/vars}}
+            {{/defaultValue}}{{/required}}{{/vars}}
         }
         
     {{#vars}}{{^isEnum}}
