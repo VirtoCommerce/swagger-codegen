@@ -18,26 +18,14 @@ namespace {{packageName}}.Model
     /// </summary>
     [DataContract]
     public partial class {{classname}} : {{#parent}}{{{parent}}}, {{/parent}} IEquatable<{{classname}}>
-    { {{#vars}}{{#isEnum}}
-    
-        [JsonConverter(typeof(StringEnumConverter))]
-        {{>enumClass}}{{/isEnum}}{{#items.isEnum}}{{#items}}
-        {{>enumClass}}{{/items}}{{/items.isEnum}}{{/vars}}
-    {{#vars}}{{#isEnum}}
-        /// <summary>
-        /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{{description}}}{{/description}}
-        /// </summary>{{#description}}
-        /// <value>{{{description}}}</value>{{/description}}
-        [DataMember(Name="{{baseName}}", EmitDefaultValue={{emitDefaultValue}})]
-        public {{{datatypeWithEnum}}} {{name}} { get; set; }
-    {{/isEnum}}{{/vars}}
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}" /> class.
         /// Initializes a new instance of the <see cref="{{classname}}" />class.
         /// </summary>
 {{#vars}}        /// <param name="{{name}}">{{#description}}{{description}}{{/description}}{{^description}}{{name}}{{/description}}{{#required}} (required){{/required}}{{#defaultValue}} (default to {{defaultValue}}){{/defaultValue}}.</param>
 {{/vars}}
-        public {{classname}}({{#vars}}{{{datatypeWithEnum}}} {{name}} = null{{#hasMore}}, {{/hasMore}}{{/vars}})
+        public {{classname}}({{#vars}}{{{datatype}}} {{name}} = null{{#hasMore}}, {{/hasMore}}{{/vars}})
         {
             {{#vars}}{{#required}}// to ensure "{{name}}" is required (not null)
             if ({{name}} == null)
@@ -60,15 +48,15 @@ namespace {{packageName}}.Model
             {{/defaultValue}}{{^defaultValue}}this.{{name}} = {{name}};
             {{/defaultValue}}{{/required}}{{/vars}}
         }
-        
-    {{#vars}}{{^isEnum}}
+{{#vars}}
         /// <summary>
         /// {{^description}}Gets or Sets {{{name}}}{{/description}}{{#description}}{{description}}{{/description}}
         /// </summary>{{#description}}
         /// <value>{{description}}</value>{{/description}}
         [DataMember(Name="{{baseName}}", EmitDefaultValue={{emitDefaultValue}})]
         public {{{datatype}}} {{name}} { get; {{#isReadOnly}}private {{/isReadOnly}}set; }
-    {{/isEnum}}{{/vars}}
+{{/vars}}
+
         /// <summary>
         /// Returns the string presentation of the object
         /// </summary>
