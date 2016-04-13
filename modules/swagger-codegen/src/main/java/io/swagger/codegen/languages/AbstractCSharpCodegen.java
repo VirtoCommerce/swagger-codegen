@@ -102,6 +102,7 @@ public abstract class AbstractCSharpCodegen extends DefaultCodegen implements Co
         typeMapping.put("string", "string");
         typeMapping.put("ByteArray", "byte[]");
         typeMapping.put("binary", "byte[]");
+        typeMapping.put("bytearray", "byte[]");
         typeMapping.put("boolean", "bool?");
         typeMapping.put("integer", "int?");
         typeMapping.put("float", "float?");
