@@ -1,5 +1,6 @@
 package io.swagger.client.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonValue;
@@ -11,10 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
-
-
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-03-14T22:17:50.356+08:00")
+/**
+ * Pet
+ */
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-13T16:29:08.210Z")
 public class Pet   {
   
   private Long id = null;
@@ -23,7 +24,9 @@ public class Pet   {
   private List<String> photoUrls = new ArrayList<String>();
   private List<Tag> tags = new ArrayList<Tag>();
 
-
+  /**
+   * pet status in the store
+   */
   public enum StatusEnum {
     AVAILABLE("available"),
     PENDING("pending"),
@@ -38,7 +41,7 @@ public class Pet   {
     @Override
     @JsonValue
     public String toString() {
-      return value;
+      return String.valueOf(value);
     }
   }
 
@@ -61,7 +64,7 @@ public class Pet   {
     this.id = id;
   }
 
-  
+
   /**
    **/
   public Pet category(Category category) {
@@ -78,7 +81,7 @@ public class Pet   {
     this.category = category;
   }
 
-  
+
   /**
    **/
   public Pet name(String name) {
@@ -95,7 +98,7 @@ public class Pet   {
     this.name = name;
   }
 
-  
+
   /**
    **/
   public Pet photoUrls(List<String> photoUrls) {
@@ -112,7 +115,7 @@ public class Pet   {
     this.photoUrls = photoUrls;
   }
 
-  
+
   /**
    **/
   public Pet tags(List<Tag> tags) {
@@ -129,7 +132,7 @@ public class Pet   {
     this.tags = tags;
   }
 
-  
+
   /**
    * pet status in the store
    **/
@@ -147,7 +150,6 @@ public class Pet   {
     this.status = status;
   }
 
-  
 
   @Override
   public boolean equals(java.lang.Object o) {

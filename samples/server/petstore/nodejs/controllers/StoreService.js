@@ -9,19 +9,37 @@ exports.deleteOrder = function(args, res, next) {
   res.end();
 }
 
-exports.getOrderById = function(args, res, next) {
+exports.getInventory = function(args, res, next) {
   /**
    * parameters expected in the args:
-  * orderId (String)
   **/
     var examples = {};
   examples['application/json'] = {
-  "id" : 123456789,
+  "key" : 123
+};
+  if(Object.keys(examples).length > 0) {
+    res.setHeader('Content-Type', 'application/json');
+    res.end(JSON.stringify(examples[Object.keys(examples)[0]] || {}, null, 2));
+  }
+  else {
+    res.end();
+  }
+  
+}
+
+exports.getOrderById = function(args, res, next) {
+  /**
+   * parameters expected in the args:
+  * orderId (Long)
+  **/
+    var examples = {};
+  examples['application/json'] = {
   "petId" : 123456789,
-  "complete" : true,
-  "status" : "aeiou",
   "quantity" : 123,
-  "shipDate" : "2000-01-23T04:56:07.000+0000"
+  "id" : 123456789,
+  "shipDate" : "2000-01-23T04:56:07.000+0000",
+  "complete" : true,
+  "status" : "aeiou"
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');
@@ -40,12 +58,12 @@ exports.placeOrder = function(args, res, next) {
   **/
     var examples = {};
   examples['application/json'] = {
-  "id" : 123456789,
   "petId" : 123456789,
-  "complete" : true,
-  "status" : "aeiou",
   "quantity" : 123,
-  "shipDate" : "2000-01-23T04:56:07.000+0000"
+  "id" : 123456789,
+  "shipDate" : "2000-01-23T04:56:07.000+0000",
+  "complete" : true,
+  "status" : "aeiou"
 };
   if(Object.keys(examples).length > 0) {
     res.setHeader('Content-Type', 'application/json');

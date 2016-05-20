@@ -1,17 +1,17 @@
 package io.swagger.client.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 
-
-
-
-
-
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-03-19T15:53:31.820+08:00")
+/**
+ * Model for testing reserved words
+ */
+@ApiModel(description = "Model for testing reserved words")
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-13T16:29:08.210Z")
 public class ModelReturn   {
   
   private Integer _return = null;
@@ -33,7 +33,6 @@ public class ModelReturn   {
     this._return = _return;
   }
 
-  
 
   @Override
   public boolean equals(java.lang.Object o) {
@@ -73,6 +72,4 @@ public class ModelReturn   {
     return o.toString().replace("\n", "\n    ");
   }
 }
-
-
 

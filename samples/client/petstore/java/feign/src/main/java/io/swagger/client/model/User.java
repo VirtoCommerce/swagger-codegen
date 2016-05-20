@@ -1,15 +1,16 @@
 package io.swagger.client.model;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
 
-
-
-
-@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-03-14T22:17:50.356+08:00")
+/**
+ * User
+ */
+@javax.annotation.Generated(value = "class io.swagger.codegen.languages.JavaClientCodegen", date = "2016-05-13T16:29:08.210Z")
 public class User   {
   
   private Long id = null;
@@ -38,7 +39,7 @@ public class User   {
     this.id = id;
   }
 
-  
+
   /**
    **/
   public User username(String username) {
@@ -55,7 +56,7 @@ public class User   {
     this.username = username;
   }
 
-  
+
   /**
    **/
   public User firstName(String firstName) {
@@ -72,7 +73,7 @@ public class User   {
     this.firstName = firstName;
   }
 
-  
+
   /**
    **/
   public User lastName(String lastName) {
@@ -89,7 +90,7 @@ public class User   {
     this.lastName = lastName;
   }
 
-  
+
   /**
    **/
   public User email(String email) {
@@ -106,7 +107,7 @@ public class User   {
     this.email = email;
   }
 
-  
+
   /**
    **/
   public User password(String password) {
@@ -123,7 +124,7 @@ public class User   {
     this.password = password;
   }
 
-  
+
   /**
    **/
   public User phone(String phone) {
@@ -140,7 +141,7 @@ public class User   {
     this.phone = phone;
   }
 
-  
+
   /**
    * User Status
    **/
@@ -158,7 +159,6 @@ public class User   {
     this.userStatus = userStatus;
   }
 
-  
 
   @Override
   public boolean equals(java.lang.Object o) {

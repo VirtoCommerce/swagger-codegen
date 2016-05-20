@@ -8,7 +8,7 @@ import java.util.TreeSet;
 import java.util.*;
 import java.io.File;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class JavascriptClosureAngularClientCodegen extends DefaultCodegen implements CodegenConfig {
     public JavascriptClosureAngularClientCodegen() {
@@ -79,7 +79,7 @@ public class JavascriptClosureAngularClientCodegen extends DefaultCodegen implem
 
     @Override
     public String getHelp() {
-        return "Generates a Javascript AngularJS client library annotated with Google Closure Compiler annotations" +
+        return "Generates a Javascript AngularJS client library (beta) annotated with Google Closure Compiler annotations" +
             "(https://developers.google.com/closure/compiler/docs/js-for-compiler?hl=en)";
     }
 

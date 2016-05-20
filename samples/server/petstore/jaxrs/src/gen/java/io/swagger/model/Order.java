@@ -19,12 +19,15 @@ public class Order   {
   private Integer quantity = null;
   private Date shipDate = null;
 
-
+  /**
+   * Order Status
+   */
   public enum StatusEnum {
     PLACED("placed"),
-    APPROVED("approved"),
-    DELIVERED("delivered");
 
+        APPROVED("approved"),
+
+        DELIVERED("delivered");
     private String value;
 
     StatusEnum(String value) {
@@ -34,14 +37,13 @@ public class Order   {
     @Override
     @JsonValue
     public String toString() {
-      return value;
+      return String.valueOf(value);
     }
   }
 
   private StatusEnum status = null;
   private Boolean complete = false;
 
-  
   /**
    **/
   public Order id(Long id) {
@@ -59,7 +61,6 @@ public class Order   {
     this.id = id;
   }
 
-  
   /**
    **/
   public Order petId(Long petId) {
@@ -77,7 +78,6 @@ public class Order   {
     this.petId = petId;
   }
 
-  
   /**
    **/
   public Order quantity(Integer quantity) {
@@ -95,7 +95,6 @@ public class Order   {
     this.quantity = quantity;
   }
 
-  
   /**
    **/
   public Order shipDate(Date shipDate) {
@@ -113,7 +112,6 @@ public class Order   {
     this.shipDate = shipDate;
   }
 
-  
   /**
    * Order Status
    **/
@@ -132,7 +130,6 @@ public class Order   {
     this.status = status;
   }
 
-  
   /**
    **/
   public Order complete(Boolean complete) {
@@ -150,7 +147,6 @@ public class Order   {
     this.complete = complete;
   }
 
-  
 
   @Override
   public boolean equals(Object o) {

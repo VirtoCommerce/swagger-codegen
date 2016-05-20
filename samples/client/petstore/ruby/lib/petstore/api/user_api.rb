@@ -1,7 +1,7 @@
 =begin
 Swagger Petstore
 
-This is a sample server Petstore server.  You can find out more about Swagger at <a href=\"http://swagger.io\">http://swagger.io</a> or on irc.freenode.net, #swagger.  For this sample, you can use the api key \"special-key\" to test the authorization filters
+This spec is mainly for testing Petstore server and contains fake endpoints, models. Please do not use this for any other purpose. Special characters: \" \\ 
 
 OpenAPI spec version: 1.0.0
 Contact: apiteam@swagger.io
@@ -26,24 +26,25 @@ module Petstore
 
     # Create user
     # This can only be done by the logged in user.
+    # @param body Created user object
     # @param [Hash] opts the optional parameters
-    # @option opts [User] :body Created user object
     # @return [nil]
-    def create_user(opts = {})
-      create_user_with_http_info(opts)
+    def create_user(body, opts = {})
+      create_user_with_http_info(body, opts)
       return nil
     end
 
     # Create user
     # This can only be done by the logged in user.
+    # @param body Created user object
     # @param [Hash] opts the optional parameters
-    # @option opts [User] :body Created user object
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
-    def create_user_with_http_info(opts = {})
+    def create_user_with_http_info(body, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#create_user ..."
+        @api_client.config.logger.debug "Calling API: UserApi.create_user ..."
       end
-      
+      # verify the required parameter 'body' is set
+      fail ArgumentError, "Missing the required parameter 'body' when calling UserApi.create_user" if body.nil?
       # resource path
       local_var_path = "/user".sub('{format}','json')
 
@@ -54,7 +55,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -65,7 +66,7 @@ module Petstore
       form_params = {}
 
       # http body (model)
-      post_body = @api_client.object_to_http_body(opts[:'body'])
+      post_body = @api_client.object_to_http_body(body)
       auth_names = []
       data, status_code, headers = @api_client.call_api(:POST, local_var_path,
         :header_params => header_params,
@@ -81,24 +82,25 @@ module Petstore
 
     # Creates list of users with given input array
     # 
+    # @param body List of user object
     # @param [Hash] opts the optional parameters
-    # @option opts [Array<User>] :body List of user object
     # @return [nil]
-    def create_users_with_array_input(opts = {})
-      create_users_with_array_input_with_http_info(opts)
+    def create_users_with_array_input(body, opts = {})
+      create_users_with_array_input_with_http_info(body, opts)
       return nil
     end
 
     # Creates list of users with given input array
     # 
+    # @param body List of user object
     # @param [Hash] opts the optional parameters
-    # @option opts [Array<User>] :body List of user object
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
-    def create_users_with_array_input_with_http_info(opts = {})
+    def create_users_with_array_input_with_http_info(body, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#create_users_with_array_input ..."
+        @api_client.config.logger.debug "Calling API: UserApi.create_users_with_array_input ..."
       end
-      
+      # verify the required parameter 'body' is set
+      fail ArgumentError, "Missing the required parameter 'body' when calling UserApi.create_users_with_array_input" if body.nil?
       # resource path
       local_var_path = "/user/createWithArray".sub('{format}','json')
 
@@ -109,7 +111,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -120,7 +122,7 @@ module Petstore
       form_params = {}
 
       # http body (model)
-      post_body = @api_client.object_to_http_body(opts[:'body'])
+      post_body = @api_client.object_to_http_body(body)
       auth_names = []
       data, status_code, headers = @api_client.call_api(:POST, local_var_path,
         :header_params => header_params,
@@ -136,24 +138,25 @@ module Petstore
 
     # Creates list of users with given input array
     # 
+    # @param body List of user object
     # @param [Hash] opts the optional parameters
-    # @option opts [Array<User>] :body List of user object
     # @return [nil]
-    def create_users_with_list_input(opts = {})
-      create_users_with_list_input_with_http_info(opts)
+    def create_users_with_list_input(body, opts = {})
+      create_users_with_list_input_with_http_info(body, opts)
       return nil
     end
 
     # Creates list of users with given input array
     # 
+    # @param body List of user object
     # @param [Hash] opts the optional parameters
-    # @option opts [Array<User>] :body List of user object
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
-    def create_users_with_list_input_with_http_info(opts = {})
+    def create_users_with_list_input_with_http_info(body, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#create_users_with_list_input ..."
+        @api_client.config.logger.debug "Calling API: UserApi.create_users_with_list_input ..."
       end
-      
+      # verify the required parameter 'body' is set
+      fail ArgumentError, "Missing the required parameter 'body' when calling UserApi.create_users_with_list_input" if body.nil?
       # resource path
       local_var_path = "/user/createWithList".sub('{format}','json')
 
@@ -164,7 +167,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -175,7 +178,7 @@ module Petstore
       form_params = {}
 
       # http body (model)
-      post_body = @api_client.object_to_http_body(opts[:'body'])
+      post_body = @api_client.object_to_http_body(body)
       auth_names = []
       data, status_code, headers = @api_client.call_api(:POST, local_var_path,
         :header_params => header_params,
@@ -206,12 +209,10 @@ module Petstore
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
     def delete_user_with_http_info(username, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#delete_user ..."
+        @api_client.config.logger.debug "Calling API: UserApi.delete_user ..."
       end
-      
       # verify the required parameter 'username' is set
-      fail "Missing the required parameter 'username' when calling delete_user" if username.nil?
-      
+      fail ArgumentError, "Missing the required parameter 'username' when calling UserApi.delete_user" if username.nil?
       # resource path
       local_var_path = "/user/{username}".sub('{format}','json').sub('{' + 'username' + '}', username.to_s)
 
@@ -222,7 +223,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -234,7 +235,7 @@ module Petstore
 
       # http body (model)
       post_body = nil
-            auth_names = ['test_http_basic']
+            auth_names = []
       data, status_code, headers = @api_client.call_api(:DELETE, local_var_path,
         :header_params => header_params,
         :query_params => query_params,
@@ -264,12 +265,10 @@ module Petstore
     # @return [Array<(User, Fixnum, Hash)>] User data, response status code and response headers
     def get_user_by_name_with_http_info(username, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#get_user_by_name ..."
+        @api_client.config.logger.debug "Calling API: UserApi.get_user_by_name ..."
       end
-      
       # verify the required parameter 'username' is set
-      fail "Missing the required parameter 'username' when calling get_user_by_name" if username.nil?
-      
+      fail ArgumentError, "Missing the required parameter 'username' when calling UserApi.get_user_by_name" if username.nil?
       # resource path
       local_var_path = "/user/{username}".sub('{format}','json').sub('{' + 'username' + '}', username.to_s)
 
@@ -280,7 +279,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -308,39 +307,42 @@ module Petstore
 
     # Logs user into the system
     # 
+    # @param username The user name for login
+    # @param password The password for login in clear text
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :username The user name for login
-    # @option opts [String] :password The password for login in clear text
     # @return [String]
-    def login_user(opts = {})
-      data, _status_code, _headers = login_user_with_http_info(opts)
+    def login_user(username, password, opts = {})
+      data, _status_code, _headers = login_user_with_http_info(username, password, opts)
       return data
     end
 
     # Logs user into the system
     # 
+    # @param username The user name for login
+    # @param password The password for login in clear text
     # @param [Hash] opts the optional parameters
-    # @option opts [String] :username The user name for login
-    # @option opts [String] :password The password for login in clear text
     # @return [Array<(String, Fixnum, Hash)>] String data, response status code and response headers
-    def login_user_with_http_info(opts = {})
+    def login_user_with_http_info(username, password, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#login_user ..."
+        @api_client.config.logger.debug "Calling API: UserApi.login_user ..."
       end
-      
+      # verify the required parameter 'username' is set
+      fail ArgumentError, "Missing the required parameter 'username' when calling UserApi.login_user" if username.nil?
+      # verify the required parameter 'password' is set
+      fail ArgumentError, "Missing the required parameter 'password' when calling UserApi.login_user" if password.nil?
       # resource path
       local_var_path = "/user/login".sub('{format}','json')
 
       # query parameters
       query_params = {}
-      query_params[:'username'] = opts[:'username'] if opts[:'username']
-      query_params[:'password'] = opts[:'password'] if opts[:'password']
+      query_params[:'username'] = username
+      query_params[:'password'] = password
 
       # header parameters
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -381,9 +383,8 @@ module Petstore
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
     def logout_user_with_http_info(opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#logout_user ..."
+        @api_client.config.logger.debug "Calling API: UserApi.logout_user ..."
       end
-      
       # resource path
       local_var_path = "/user/logout".sub('{format}','json')
 
@@ -394,7 +395,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -422,28 +423,28 @@ module Petstore
     # Updated user
     # This can only be done by the logged in user.
     # @param username name that need to be deleted
+    # @param body Updated user object
     # @param [Hash] opts the optional parameters
-    # @option opts [User] :body Updated user object
     # @return [nil]
-    def update_user(username, opts = {})
-      update_user_with_http_info(username, opts)
+    def update_user(username, body, opts = {})
+      update_user_with_http_info(username, body, opts)
       return nil
     end
 
     # Updated user
     # This can only be done by the logged in user.
     # @param username name that need to be deleted
+    # @param body Updated user object
     # @param [Hash] opts the optional parameters
-    # @option opts [User] :body Updated user object
     # @return [Array<(nil, Fixnum, Hash)>] nil, response status code and response headers
-    def update_user_with_http_info(username, opts = {})
+    def update_user_with_http_info(username, body, opts = {})
       if @api_client.config.debugging
-        @api_client.config.logger.debug "Calling API: UserApi#update_user ..."
+        @api_client.config.logger.debug "Calling API: UserApi.update_user ..."
       end
-      
       # verify the required parameter 'username' is set
-      fail "Missing the required parameter 'username' when calling update_user" if username.nil?
-      
+      fail ArgumentError, "Missing the required parameter 'username' when calling UserApi.update_user" if username.nil?
+      # verify the required parameter 'body' is set
+      fail ArgumentError, "Missing the required parameter 'body' when calling UserApi.update_user" if body.nil?
       # resource path
       local_var_path = "/user/{username}".sub('{format}','json').sub('{' + 'username' + '}', username.to_s)
 
@@ -454,7 +455,7 @@ module Petstore
       header_params = {}
 
       # HTTP header 'Accept' (if needed)
-      local_header_accept = ['application/json', 'application/xml']
+      local_header_accept = ['application/xml', 'application/json']
       local_header_accept_result = @api_client.select_header_accept(local_header_accept) and header_params['Accept'] = local_header_accept_result
 
       # HTTP header 'Content-Type'
@@ -465,7 +466,7 @@ module Petstore
       form_params = {}
 
       # http body (model)
-      post_body = @api_client.object_to_http_body(opts[:'body'])
+      post_body = @api_client.object_to_http_body(body)
       auth_names = []
       data, status_code, headers = @api_client.call_api(:PUT, local_var_path,
         :header_params => header_params,
