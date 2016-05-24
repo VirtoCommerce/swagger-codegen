@@ -26,7 +26,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>{{#returnType}}{{returnType}}{{/returnType}}</returns>
-        {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}} ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+        {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
 
         /// <summary>
         /// {{summary}}
@@ -37,7 +37,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>ApiResponse of {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Object(void){{/returnType}}</returns>
-        ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}> {{operationId}}WithHttpInfo ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+        ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
         {{/operation}}
         #endregion Synchronous Operations
         {{#supportsAsync}}
@@ -52,7 +52,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}</returns>
-        {{#returnType}}System.Threading.Tasks.Task<{{{returnType}}}>{{/returnType}}{{^returnType}}System.Threading.Tasks.Task{{/returnType}} {{operationId}}Async ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+        {{#returnType}}System.Threading.Tasks.Task<{{{returnType}}}>{{/returnType}}{{^returnType}}System.Threading.Tasks.Task{{/returnType}} {{operationId}}Async({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
 
         /// <summary>
         /// {{summary}}
@@ -63,7 +63,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of ApiResponse{{#returnType}} ({{returnType}}){{/returnType}}</returns>
-        System.Threading.Tasks.Task<ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>> {{operationId}}AsyncWithHttpInfo ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
+        System.Threading.Tasks.Task<ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}object{{/returnType}}>> {{operationId}}AsyncWithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
         {{/operation}}
         #endregion Asynchronous Operations
         {{/supportsAsync}}
@@ -72,74 +72,40 @@ namespace {{packageName}}.Api
     /// <summary>
     /// Represents a collection of functions to interact with the API endpoints
     /// </summary>
-    public partial class {{classname}} : I{{classname}}
+    public class {{classname}} : I{{classname}}
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="{{classname}}"/> class
         /// using Configuration object
         /// </summary>
-        /// <param name="configuration">An instance of Configuration</param>
+        /// <param name="apiClient">An instance of ApiClient.</param>
         /// <returns></returns>
-        public {{classname}}(Configuration configuration)
+        public {{classname}}(ApiClient apiClient)
         {
-            if (configuration == null) // use the default one in Configuration
-                this.Configuration = Configuration.Default;
-            else
-                this.Configuration = configuration;
-
-            // ensure API client has configuration ready
-            if (Configuration.ApiClient.Configuration == null)
-            {
-                this.Configuration.ApiClient.Configuration = this.Configuration;
-            }
+            ApiClient = apiClient;
+            Configuration = apiClient.Configuration;
         }
 
         /// <summary>
         /// Gets the base path of the API client.
         /// </summary>
         /// <value>The base path</value>
-        public String GetBasePath()
+        public string GetBasePath()
         {
-            return this.Configuration.ApiClient.RestClient.BaseUrl.ToString();
-        }
-
-        /// <summary>
-        /// Sets the base path of the API client.
-        /// </summary>
-        /// <value>The base path</value>
-        [Obsolete("SetBasePath is deprecated, please do 'Configuration.ApiClient = new ApiClient(\"http://new-path\")' instead.")]
-        public void SetBasePath(String basePath)
-        {
-            // do nothing
+            return ApiClient.RestClient.BaseUrl.ToString();
         }
 
         /// <summary>
         /// Gets or sets the configuration object
         /// </summary>
         /// <value>An instance of the Configuration</value>
-        public Configuration Configuration {get; set;}
+        public Configuration Configuration { get; set; }
 
         /// <summary>
-        /// Gets the default header.
+        /// Gets or sets the API client object
         /// </summary>
-        /// <returns>Dictionary of HTTP header</returns>
-        [Obsolete("DefaultHeader is deprecated, please use Configuration.DefaultHeader instead.")]
-        public Dictionary<String, String> DefaultHeader()
-        {
-            return this.Configuration.DefaultHeader;
-        }
-
-        /// <summary>
-        /// Add default header.
-        /// </summary>
-        /// <param name="key">Header field name.</param>
-        /// <param name="value">Header field value.</param>
-        /// <returns></returns>
-        [Obsolete("AddDefaultHeader is deprecated, please use Configuration.AddDefaultHeader instead.")]
-        public void AddDefaultHeader(string key, string value)
-        {
-            this.Configuration.AddDefaultHeader(key, value);
-        }
+        /// <value>An instance of the ApiClient</value>
+        public ApiClient ApiClient { get; set; }
 
         {{#operation}}
         /// <summary>
@@ -148,7 +114,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>{{#returnType}}{{returnType}}{{/returnType}}</returns>
-        public {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}} ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        public {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}void{{/returnType}} {{operationId}}({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
              {{#returnType}}ApiResponse<{{{returnType}}}> localVarResponse = {{operationId}}WithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
              return localVarResponse.Data;{{/returnType}}{{^returnType}}{{operationId}}WithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}
@@ -160,7 +126,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>ApiResponse of {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}Object(void){{/returnType}}</returns>
-        public ApiResponse<{{#returnType}} {{{returnType}}} {{/returnType}}{{^returnType}}Object{{/returnType}}> {{operationId}}WithHttpInfo ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        public ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}object{{/returnType}}> {{operationId}}WithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
             {{#allParams}}
             {{#required}}
@@ -171,28 +137,28 @@ namespace {{packageName}}.Api
             {{/allParams}}
 
             var localVarPath = "{{path}}";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new Dictionary<String, String>();
-            var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
-            Object localVarPostBody = null;
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new Dictionary<string, string>();
+            var localVarHeaderParams = new Dictionary<string, string>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
+            object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 {{#consumes}}
                 "{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}
                 {{/consumes}}
             };
-            String localVarHttpContentType = Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 {{#produces}}
                 "{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}
                 {{/produces}}
             };
-            String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
@@ -200,21 +166,21 @@ namespace {{packageName}}.Api
             // e.g. /pet/{petId}.{format} becomes /pet/{petId}.json
             localVarPathParams.Add("format", "json");
             {{#pathParams}}
-            if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // path parameter
+            if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // path parameter
             {{/pathParams}}
             {{#queryParams}}
-            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // query parameter
+            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // query parameter
             {{/queryParams}}
             {{#headerParams}}
-            if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // header parameter
+            if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // header parameter
             {{/headerParams}}
             {{#formParams}}
-            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
+            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
             {{/formParams}}
             {{#bodyParam}}
             if ({{^required}}{{paramName}} != null && {{/required}}{{paramName}}.GetType() != typeof(byte[]))
             {
-                localVarPostBody = Configuration.ApiClient.Serialize({{paramName}}); // http body (model) parameter
+                localVarPostBody = ApiClient.Serialize({{paramName}}); // http body (model) parameter
             }
             else
             {
@@ -226,13 +192,13 @@ namespace {{packageName}}.Api
             // authentication ({{name}}) required
             {{#isApiKey}}
             {{#isKeyInHeader}}
-            if (!String.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
+            if (!string.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
             {
                 localVarHeaderParams["{{keyParamName}}"] = Configuration.GetApiKeyWithPrefix("{{keyParamName}}");
             }
             {{/isKeyInHeader}}
             {{#isKeyInQuery}}
-            if (!String.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
+            if (!string.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
             {
                 localVarQueryParams["{{keyParamName}}"] = Configuration.GetApiKeyWithPrefix("{{keyParamName}}");
             }
@@ -240,35 +206,35 @@ namespace {{packageName}}.Api
             {{/isApiKey}}
             {{#isBasic}}
             // http basic authentication required
-            if (!String.IsNullOrEmpty(Configuration.Username) || !String.IsNullOrEmpty(Configuration.Password))
+            if (!string.IsNullOrEmpty(Configuration.Username) || !string.IsNullOrEmpty(Configuration.Password))
             {
                 localVarHeaderParams["Authorization"] = "Basic " + ApiClient.Base64Encode(Configuration.Username + ":" + Configuration.Password);
             }
             {{/isBasic}}
             {{#isOAuth}}
             // oauth required
-            if (!String.IsNullOrEmpty(Configuration.AccessToken))
+            if (!string.IsNullOrEmpty(Configuration.AccessToken))
             {
                 localVarHeaderParams["Authorization"] = "Bearer " + Configuration.AccessToken;
             }{{/isOAuth}}
             {{/authMethods}}
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) Configuration.ApiClient.CallApi(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)ApiClient.CallApi(localVarPath,
                 Method.{{httpMethod}}, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (localVarStatusCode >= 400 && (localVarStatusCode != 404 || Configuration.ThrowExceptionWhenStatusCodeIs404))
-                throw new ApiException (localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.Content, localVarResponse.Content);
+                throw new ApiException(localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.Content, localVarResponse.Content);
             else if (localVarStatusCode == 0)
-                throw new ApiException (localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
+                throw new ApiException(localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
 
             {{#returnType}}return new ApiResponse<{{{returnType}}}>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                ({{{returnType}}}) Configuration.ApiClient.Deserialize(localVarResponse, typeof({{#returnContainer}}{{{returnContainer}}}{{/returnContainer}}{{^returnContainer}}{{{returnType}}}{{/returnContainer}})));{{/returnType}}
-            {{^returnType}}return new ApiResponse<Object>(localVarStatusCode,
+                ({{{returnType}}})ApiClient.Deserialize(localVarResponse, typeof({{#returnContainer}}{{{returnContainer}}}{{/returnContainer}}{{^returnContainer}}{{{returnType}}}{{/returnContainer}})));{{/returnType}}
+            {{^returnType}}return new ApiResponse<object>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 null);{{/returnType}}
         }
@@ -280,7 +246,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of {{#returnType}}{{returnType}}{{/returnType}}{{^returnType}}void{{/returnType}}</returns>
-        {{#returnType}}public async System.Threading.Tasks.Task<{{{returnType}}}>{{/returnType}}{{^returnType}}public async System.Threading.Tasks.Task{{/returnType}} {{operationId}}Async ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        {{#returnType}}public async System.Threading.Tasks.Task<{{{returnType}}}>{{/returnType}}{{^returnType}}public async System.Threading.Tasks.Task{{/returnType}} {{operationId}}Async({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
              {{#returnType}}ApiResponse<{{{returnType}}}> localVarResponse = await {{operationId}}AsyncWithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});
              return localVarResponse.Data;{{/returnType}}{{^returnType}}await {{operationId}}AsyncWithHttpInfo({{#allParams}}{{paramName}}{{#hasMore}}, {{/hasMore}}{{/allParams}});{{/returnType}}
@@ -293,7 +259,7 @@ namespace {{packageName}}.Api
         /// <exception cref="{{packageName}}.Client.ApiException">Thrown when fails to make API call</exception>
         {{#allParams}}/// <param name="{{paramName}}">{{description}}{{^required}} (optional{{#defaultValue}}, default to {{.}}{{/defaultValue}}){{/required}}</param>
         {{/allParams}}/// <returns>Task of ApiResponse{{#returnType}} ({{returnType}}){{/returnType}}</returns>
-        public async System.Threading.Tasks.Task<ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Object{{/returnType}}>> {{operationId}}AsyncWithHttpInfo ({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
+        public async System.Threading.Tasks.Task<ApiResponse<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}object{{/returnType}}>> {{operationId}}AsyncWithHttpInfo({{#allParams}}{{{dataType}}} {{paramName}}{{^required}}{{#optionalMethodArgument}} = null{{/optionalMethodArgument}}{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}})
         {
             {{#allParams}}
             {{#required}}
@@ -304,28 +270,28 @@ namespace {{packageName}}.Api
             {{/allParams}}
 
             var localVarPath = "{{path}}";
-            var localVarPathParams = new Dictionary<String, String>();
-            var localVarQueryParams = new Dictionary<String, String>();
-            var localVarHeaderParams = new Dictionary<String, String>(Configuration.DefaultHeader);
-            var localVarFormParams = new Dictionary<String, String>();
-            var localVarFileParams = new Dictionary<String, FileParameter>();
-            Object localVarPostBody = null;
+            var localVarPathParams = new Dictionary<string, string>();
+            var localVarQueryParams = new Dictionary<string, string>();
+            var localVarHeaderParams = new Dictionary<string, string>(Configuration.DefaultHeader);
+            var localVarFormParams = new Dictionary<string, string>();
+            var localVarFileParams = new Dictionary<string, FileParameter>();
+            object localVarPostBody = null;
 
             // to determine the Content-Type header
-            String[] localVarHttpContentTypes = new String[] {
+            string[] localVarHttpContentTypes = new string[] {
                 {{#consumes}}
                 "{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}
                 {{/consumes}}
             };
-            String localVarHttpContentType = Configuration.ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
+            string localVarHttpContentType = ApiClient.SelectHeaderContentType(localVarHttpContentTypes);
 
             // to determine the Accept header
-            String[] localVarHttpHeaderAccepts = new String[] {
+            string[] localVarHttpHeaderAccepts = new string[] {
                 {{#produces}}
                 "{{{mediaType}}}"{{#hasMore}}, {{/hasMore}}
                 {{/produces}}
             };
-            String localVarHttpHeaderAccept = Configuration.ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
+            string localVarHttpHeaderAccept = ApiClient.SelectHeaderAccept(localVarHttpHeaderAccepts);
             if (localVarHttpHeaderAccept != null)
                 localVarHeaderParams.Add("Accept", localVarHttpHeaderAccept);
 
@@ -333,21 +299,21 @@ namespace {{packageName}}.Api
             // e.g. /pet/{petId}.{format} becomes /pet/{petId}.json
             localVarPathParams.Add("format", "json");
             {{#pathParams}}
-            if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // path parameter
+            if ({{paramName}} != null) localVarPathParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // path parameter
             {{/pathParams}}
             {{#queryParams}}
-            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // query parameter
+            if ({{paramName}} != null) localVarQueryParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // query parameter
             {{/queryParams}}
             {{#headerParams}}
-            if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // header parameter
+            if ({{paramName}} != null) localVarHeaderParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // header parameter
             {{/headerParams}}
             {{#formParams}}
-            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", Configuration.ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
+            if ({{paramName}} != null) {{#isFile}}localVarFileParams.Add("{{baseName}}", ApiClient.ParameterToFile("{{baseName}}", {{paramName}}));{{/isFile}}{{^isFile}}localVarFormParams.Add("{{baseName}}", ApiClient.ParameterToString({{paramName}})); // form parameter{{/isFile}}
             {{/formParams}}
             {{#bodyParam}}
             if ({{^required}}{{paramName}} != null && {{/required}}{{paramName}}.GetType() != typeof(byte[]))
             {
-                localVarPostBody = Configuration.ApiClient.Serialize({{paramName}}); // http body (model) parameter
+                localVarPostBody = ApiClient.Serialize({{paramName}}); // http body (model) parameter
             }
             else
             {
@@ -359,13 +325,13 @@ namespace {{packageName}}.Api
             // authentication ({{name}}) required
             {{#isApiKey}}
             {{#isKeyInHeader}}
-            if (!String.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
+            if (!string.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
             {
                 localVarHeaderParams["{{keyParamName}}"] = Configuration.GetApiKeyWithPrefix("{{keyParamName}}");
             }
             {{/isKeyInHeader}}
             {{#isKeyInQuery}}
-            if (!String.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
+            if (!string.IsNullOrEmpty(Configuration.GetApiKeyWithPrefix("{{keyParamName}}")))
             {
                 localVarQueryParams["{{keyParamName}}"] = Configuration.GetApiKeyWithPrefix("{{keyParamName}}");
             }
@@ -373,14 +339,14 @@ namespace {{packageName}}.Api
             {{/isApiKey}}
             {{#isBasic}}
             // http basic authentication required
-            if (!String.IsNullOrEmpty(Configuration.Username) || !String.IsNullOrEmpty(Configuration.Password))
+            if (!string.IsNullOrEmpty(Configuration.Username) || !string.IsNullOrEmpty(Configuration.Password))
             {
                 localVarHeaderParams["Authorization"] = "Basic " + ApiClient.Base64Encode(Configuration.Username + ":" + Configuration.Password);
             }
             {{/isBasic}}
             {{#isOAuth}}
             // oauth required
-            if (!String.IsNullOrEmpty(Configuration.AccessToken))
+            if (!string.IsNullOrEmpty(Configuration.AccessToken))
             {
                 localVarHeaderParams["Authorization"] = "Bearer " + Configuration.AccessToken;
             }
@@ -388,25 +354,24 @@ namespace {{packageName}}.Api
             {{/authMethods}}
 
             // make the HTTP request
-            IRestResponse localVarResponse = (IRestResponse) await Configuration.ApiClient.CallApiAsync(localVarPath,
+            IRestResponse localVarResponse = (IRestResponse)await ApiClient.CallApiAsync(localVarPath,
                 Method.{{httpMethod}}, localVarQueryParams, localVarPostBody, localVarHeaderParams, localVarFormParams, localVarFileParams,
                 localVarPathParams, localVarHttpContentType);
 
-            int localVarStatusCode = (int) localVarResponse.StatusCode;
+            int localVarStatusCode = (int)localVarResponse.StatusCode;
 
             if (localVarStatusCode >= 400 && (localVarStatusCode != 404 || Configuration.ThrowExceptionWhenStatusCodeIs404))
-                throw new ApiException (localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.Content, localVarResponse.Content);
+                throw new ApiException(localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.Content, localVarResponse.Content);
             else if (localVarStatusCode == 0)
-                throw new ApiException (localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
+                throw new ApiException(localVarStatusCode, "Error calling {{operationId}}: " + localVarResponse.ErrorMessage, localVarResponse.ErrorMessage);
 
             {{#returnType}}return new ApiResponse<{{{returnType}}}>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
-                ({{{returnType}}}) Configuration.ApiClient.Deserialize(localVarResponse, typeof({{#returnContainer}}{{{returnContainer}}}{{/returnContainer}}{{^returnContainer}}{{{returnType}}}{{/returnContainer}})));{{/returnType}}
-            {{^returnType}}return new ApiResponse<Object>(localVarStatusCode,
+                ({{{returnType}}})ApiClient.Deserialize(localVarResponse, typeof({{#returnContainer}}{{{returnContainer}}}{{/returnContainer}}{{^returnContainer}}{{{returnType}}}{{/returnContainer}})));{{/returnType}}
+            {{^returnType}}return new ApiResponse<object>(localVarStatusCode,
                 localVarResponse.Headers.ToDictionary(x => x.Name, x => x.Value.ToString()),
                 null);{{/returnType}}
         }
-
         {{/supportsAsync}}
         {{/operation}}
     }
