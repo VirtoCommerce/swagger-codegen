@@ -68,9 +68,15 @@ public class CodegenConstants {
     public static final String RETURN_ICOLLECTION = "returnICollection";
     public static final String RETURN_ICOLLECTION_DESC = "Return ICollection<T> instead of the concrete type.";
     
+    public static final String OPTIONAL_SOLUTION_FILE = "optionalSolutionFile";
+    public static final String OPTIONAL_SOLUTION_FILE_DESC = "Generate {PackageName}.sln.";
+
+    public static final String OPTIONAL_SUPPORTING_FILES = "optionalSupportingFiles";
+    public static final String OPTIONAL_SUPPORTING_FILES_DESC = "Generate build scripts, readme, etc.";
+
     public static final String OPTIONAL_PROJECT_FILE = "optionalProjectFile";
     public static final String OPTIONAL_PROJECT_FILE_DESC = "Generate {PackageName}.csproj.";
-    
+
     public static final String OPTIONAL_PROJECT_GUID = "packageGuid";
     public static final String OPTIONAL_PROJECT_GUID_DESC = "The GUID that will be associated with the C# project";
     

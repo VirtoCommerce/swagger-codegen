@@ -54,6 +54,8 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
     protected boolean supportsAsync = Boolean.TRUE;
     protected boolean supportsUWP = Boolean.FALSE;
 
+    protected boolean optionalSolutionFileFlag = true;
+    protected boolean optionalSupportingFilesFlag = true;
 
     protected final Map<String, String> frameworks;
 
@@ -129,6 +131,14 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
                 CodegenConstants.OPTIONAL_PROJECT_FILE_DESC,
                 this.optionalProjectFileFlag);
 
+        addSwitch(CodegenConstants.OPTIONAL_SOLUTION_FILE,
+                CodegenConstants.OPTIONAL_SOLUTION_FILE_DESC,
+                this.optionalSolutionFileFlag);
+
+        addSwitch(CodegenConstants.OPTIONAL_SUPPORTING_FILES,
+                CodegenConstants.OPTIONAL_SUPPORTING_FILES_DESC,
+                this.optionalSupportingFilesFlag);
+
         addSwitch(CodegenConstants.OPTIONAL_EMIT_DEFAULT_VALUES,
                 CodegenConstants.OPTIONAL_EMIT_DEFAULT_VALUES_DESC,
                 this.optionalEmitDefaultValue);
@@ -191,6 +201,16 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
                     additionalProperties.get(CodegenConstants.OPTIONAL_PROJECT_FILE).toString()));
         }
 
+        if (additionalProperties.containsKey(CodegenConstants.OPTIONAL_SOLUTION_FILE)) {
+            setOptionalSolutionFileFlag(Boolean.valueOf(
+                    additionalProperties.get(CodegenConstants.OPTIONAL_SOLUTION_FILE).toString()));
+        }
+
+        if (additionalProperties.containsKey(CodegenConstants.OPTIONAL_SUPPORTING_FILES)) {
+            setOptionalSupportingFilesFlag(Boolean.valueOf(
+                    additionalProperties.get(CodegenConstants.OPTIONAL_SUPPORTING_FILES).toString()));
+        }
+
         if (additionalProperties.containsKey(CodegenConstants.OPTIONAL_PROJECT_GUID)) {
             setPackageGuid((String) additionalProperties.get(CodegenConstants.OPTIONAL_PROJECT_GUID));
         }
@@ -234,9 +254,6 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
         supportingFiles.add(new SupportingFile("ApiResponse.mustache",
                 clientPackageDir, "ApiResponse.cs"));
 
-        supportingFiles.add(new SupportingFile("compile.mustache", "", "build.bat"));
-        supportingFiles.add(new SupportingFile("compile-mono.sh.mustache", "", "build.sh"));
-
         // copy package.config to nuget's standard location for project-level installs
         supportingFiles.add(new SupportingFile("packages.config.mustache", packageFolder + File.separator, "packages.config"));
 
@@ -244,20 +261,28 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
             supportingFiles.add(new SupportingFile("packages_test.config.mustache", testPackageFolder + File.separator, "packages.config"));
         }
 
-        supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
-        supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
-        supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
+        if(optionalSupportingFilesFlag) {
+            supportingFiles.add(new SupportingFile("compile.mustache", "", "build.bat"));
+            supportingFiles.add(new SupportingFile("compile-mono.sh.mustache", "", "build.sh"));
+            supportingFiles.add(new SupportingFile("README.mustache", "", "README.md"));
+            supportingFiles.add(new SupportingFile("git_push.sh.mustache", "", "git_push.sh"));
+            supportingFiles.add(new SupportingFile("gitignore.mustache", "", ".gitignore"));
+        }
 
         if (optionalAssemblyInfoFlag) {
             supportingFiles.add(new SupportingFile("AssemblyInfo.mustache", packageFolder + File.separator + "Properties", "AssemblyInfo.cs"));
         }
+
         if (optionalProjectFileFlag) {
-            supportingFiles.add(new SupportingFile("Solution.mustache", "", packageName + ".sln"));
             supportingFiles.add(new SupportingFile("Project.mustache", packageFolder, packageName + ".csproj"));
 
             if(Boolean.FALSE.equals(excludeTests)) {
                 supportingFiles.add(new SupportingFile("TestProject.mustache", testPackageFolder, testPackageName + ".csproj"));
             }
+        }
+
+        if (optionalSolutionFileFlag) {
+            supportingFiles.add(new SupportingFile("Solution.mustache", "", packageName + ".sln"));
         }
 
         additionalProperties.put("apiDocPath", apiDocPath);
@@ -325,6 +350,9 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
     public void setOptionalProjectFileFlag(boolean flag) {
         this.optionalProjectFileFlag = flag;
     }
+
+    public void setOptionalSolutionFileFlag(boolean flag) { this.optionalSolutionFileFlag = flag; }
+    public void setOptionalSupportingFilesFlag(boolean flag) { this.optionalSupportingFilesFlag = flag; }
 
     public void setPackageGuid(String packageGuid) {
         this.packageGuid = packageGuid;
