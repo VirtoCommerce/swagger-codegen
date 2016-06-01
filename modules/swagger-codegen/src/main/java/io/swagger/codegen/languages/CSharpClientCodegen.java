@@ -275,6 +275,7 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
 
         if (optionalProjectFileFlag) {
             supportingFiles.add(new SupportingFile("Project.mustache", packageFolder, packageName + ".csproj"));
+            supportingFiles.add(new SupportingFile("Nuspec.mustache", packageFolder, packageName + ".nuspec"));
 
             if(Boolean.FALSE.equals(excludeTests)) {
                 supportingFiles.add(new SupportingFile("TestProject.mustache", testPackageFolder, testPackageName + ".csproj"));
